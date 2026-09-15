@@ -33,6 +33,29 @@
         @endif
 
 
+        {{-- แสดง Error --}}
+
+        @if($errors->any())
+
+            <div class="alert alert-danger">
+
+                <ul class="mb-0">
+
+                    @foreach($errors->all() as $error)
+
+                        <li>
+                            {{ $error }}
+                        </li>
+
+                    @endforeach
+
+                </ul>
+
+            </div>
+
+        @endif
+
+
         <div class="row g-4">
 
 
@@ -45,8 +68,10 @@
 
                 {{-- Email --}}
 
-                <div class="p-4 mb-3"
-                     style="background:#f5f3ff;border-radius:15px;">
+                <div
+                    class="p-4 mb-3"
+                    style="background:#f5f3ff;border-radius:15px;"
+                >
 
                     <h5>
                         📧 Email
@@ -61,8 +86,10 @@
 
                 {{-- Phone --}}
 
-                <div class="p-4 mb-3"
-                     style="background:#f5f3ff;border-radius:15px;">
+                <div
+                    class="p-4 mb-3"
+                    style="background:#f5f3ff;border-radius:15px;"
+                >
 
                     <h5>
                         📞 Phone
@@ -77,8 +104,10 @@
 
                 {{-- Location --}}
 
-                <div class="p-4 mb-3"
-                     style="background:#f5f3ff;border-radius:15px;">
+                <div
+                    class="p-4 mb-3"
+                    style="background:#f5f3ff;border-radius:15px;"
+                >
 
                     <h5>
                         📍 Location
@@ -86,6 +115,36 @@
 
                     <p class="text-muted mb-0">
                         จังหวัดเชียงใหม่ ประเทศไทย
+                    </p>
+
+                </div>
+
+
+                {{-- Chat Info --}}
+
+                <div
+                    class="p-4"
+                    style="background:#fff7ed;border-radius:15px;"
+                >
+
+                    <h5>
+                        💬 Live Chat
+                    </h5>
+
+                    <p class="text-muted mb-0">
+
+                        @auth
+
+                            สามารถส่งข้อความหา Admin
+                            และรอรับการตอบกลับผ่านระบบ Chat ได้เลย
+
+                        @else
+
+                            กรุณาเข้าสู่ระบบก่อน
+                            เพื่อสนทนากับ Admin
+
+                        @endauth
+
                     </p>
 
                 </div>
@@ -106,76 +165,129 @@
                 </h4>
 
 
-                {{-- ต้องส่งไป contact.store --}}
+                @auth
 
-                <form action="{{ route('contact.store') }}"
-                      method="POST">
+                    <form
+                        action="{{ route('contact.store') }}"
+                        method="POST"
+                    >
 
-                    @csrf
+                        @csrf
 
 
-                    {{-- ชื่อ --}}
+                        {{-- ชื่อ --}}
 
-                    <div class="mb-3">
+                        <div class="mb-3">
 
-                        <label class="form-label">
-                            ชื่อ - นามสกุล
-                        </label>
+                            <label class="form-label">
+                                ชื่อ - นามสกุล
+                            </label>
 
-                        <input type="text"
-                               name="name"
-                               class="form-control"
-                               placeholder="กรุณากรอกชื่อ"
-                               required>
+                            <input
+                                type="text"
+                                name="name"
+                                class="form-control"
+                                value="{{ auth()->user()->name }}"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        {{-- Email --}}
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                อีเมล
+                            </label>
+
+                            <input
+                                type="email"
+                                name="email"
+                                class="form-control"
+                                value="{{ auth()->user()->email }}"
+                                readonly
+                            >
+
+                        </div>
+
+
+                        {{-- Message --}}
+
+                        <div class="mb-3">
+
+                            <label class="form-label">
+                                ข้อความ
+                            </label>
+
+                            <textarea
+                                name="message"
+                                class="form-control"
+                                rows="5"
+                                placeholder="พิมพ์ข้อความ..."
+                                required
+                            ></textarea>
+
+                        </div>
+
+
+                        {{-- ปุ่มส่ง --}}
+
+                        <button
+                            type="submit"
+                            class="btn btn-purple"
+                        >
+
+                            <i class="fa-solid fa-paper-plane me-1"></i>
+
+                            ส่งข้อความ
+
+                        </button>
+
+
+                    </form>
+
+
+                @else
+
+
+                    {{-- Guest --}}
+
+                    <div class="text-center p-5 bg-light rounded-4">
+
+                        <div
+                            class="mb-3"
+                            style="font-size:50px;"
+                        >
+                            💬
+                        </div>
+
+                        <h5 class="fw-bold">
+                            เข้าสู่ระบบเพื่อส่งข้อความ
+                        </h5>
+
+                        <p class="text-muted">
+                            คุณต้อง Login ก่อนจึงจะสามารถติดต่อกับ Admin
+                            ผ่านระบบ Chat ได้
+                        </p>
+
+                        <a
+                            href="{{ route('login') }}"
+                            class="btn btn-purple"
+                        >
+
+                            <i class="fa-solid fa-right-to-bracket me-1"></i>
+
+                            เข้าสู่ระบบ
+
+                        </a>
 
                     </div>
 
 
-                    {{-- Email --}}
+                @endauth
 
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            อีเมล
-                        </label>
-
-                        <input type="email"
-                               name="email"
-                               class="form-control"
-                               placeholder="example@email.com"
-                               required>
-
-                    </div>
-
-
-                    {{-- Message --}}
-
-                    <div class="mb-3">
-
-                        <label class="form-label">
-                            ข้อความ
-                        </label>
-
-                        <textarea name="message"
-                                  class="form-control"
-                                  rows="5"
-                                  placeholder="พิมพ์ข้อความ..."
-                                  required></textarea>
-
-                    </div>
-
-
-                    {{-- ปุ่มส่ง --}}
-
-                    <button type="submit"
-                            class="btn btn-purple">
-
-                        💌 ส่งข้อความ
-
-                    </button>
-
-
-                </form>
 
             </div>
 

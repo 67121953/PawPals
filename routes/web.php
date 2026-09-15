@@ -7,6 +7,7 @@ use App\Http\Controllers\MovieController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminAdoptionController;
+use App\Http\Controllers\ChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,11 +37,20 @@ Route::get('/contact', function () {
     return view('contact.index');
 })->name('contact');
 
-Route::post('/contact', function () {
-    return redirect()
-        ->route('contact')
-        ->with('success', 'ส่งข้อความเรียบร้อยแล้ว ขอบคุณที่ติดต่อเรา');
-})->name('contact.store');
+
+/*
+|--------------------------------------------------------------------------
+| Contact
+|--------------------------------------------------------------------------
+|
+| ตอนนี้ Contact จะส่งข้อความผ่านระบบ Chat
+| สำหรับผู้ใช้ที่ Login
+|
+*/
+
+Route::post('/contact', [ChatController::class, 'sendContact'])
+    ->middleware('auth')
+    ->name('contact.store');
 
 
 /*
@@ -73,58 +83,69 @@ Route::middleware('auth')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
+    | Chat
+    |--------------------------------------------------------------------------
+    */
+
+    // เปิดหน้า Chat
+    Route::get('/chat', [ChatController::class, 'index'])
+        ->name('chat.index');
+
+    // ดึงข้อความ
+    Route::get('/chat/messages', [ChatController::class, 'messages'])
+        ->name('chat.messages');
+
+    // ส่งข้อความ
+    Route::post('/chat/messages', [ChatController::class, 'send'])
+        ->name('chat.send');
+
+    // ทำเครื่องหมายว่าอ่านแล้ว
+    Route::post('/chat/read', [ChatController::class, 'markAsRead'])
+        ->name('chat.read');
+
+
+    /*
+    |--------------------------------------------------------------------------
     | Pet Management
     |--------------------------------------------------------------------------
     |
-    | สำคัญ:
     | /pets/create ต้องอยู่ก่อน /pets/{pet}
-    | เพราะไม่เช่นนั้น Laravel จะมอง "create" เป็นค่า {pet}
     |
     */
 
     // เพิ่มสัตว์เลี้ยง
-    Route::get('/pets/create',
-        [PetController::class, 'create']
-    )->name('pets.create');
+    Route::get('/pets/create', [PetController::class, 'create'])
+        ->name('pets.create');
 
     // บันทึกสัตว์เลี้ยง
-    Route::post('/pets',
-        [PetController::class, 'store']
-    )->name('pets.store');
+    Route::post('/pets', [PetController::class, 'store'])
+        ->name('pets.store');
 
     // แก้ไขสัตว์เลี้ยง
-    Route::get('/pets/{pet}/edit',
-        [PetController::class, 'edit']
-    )->name('pets.edit');
+    Route::get('/pets/{pet}/edit', [PetController::class, 'edit'])
+        ->name('pets.edit');
 
     // อัปเดตสัตว์เลี้ยง
-    Route::put('/pets/{pet}',
-        [PetController::class, 'update']
-    )->name('pets.update');
+    Route::put('/pets/{pet}', [PetController::class, 'update'])
+        ->name('pets.update');
 
     // ลบสัตว์เลี้ยง
-    Route::delete('/pets/{pet}',
-        [PetController::class, 'destroy']
-    )->name('pets.destroy');
+    Route::delete('/pets/{pet}', [PetController::class, 'destroy'])
+        ->name('pets.destroy');
 
     // เปลี่ยนสถานะการรับเลี้ยง
-    Route::patch('/pets/{pet}/toggle-adopt',
-        [PetController::class, 'toggleAdopt']
-    )->name('pets.toggle-adopt');
+    Route::patch('/pets/{pet}/toggle-adopt', [PetController::class, 'toggleAdopt'])
+        ->name('pets.toggle-adopt');
 
 
     /*
     |--------------------------------------------------------------------------
     | Pet Show
     |--------------------------------------------------------------------------
-    |
-    | ต้องวางหลัง /pets/create
-    |
     */
 
-    Route::get('/pets/{pet}',
-        [PetController::class, 'show']
-    )->name('pets.show');
+    Route::get('/pets/{pet}', [PetController::class, 'show'])
+        ->name('pets.show');
 
 
     /*
@@ -133,17 +154,14 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::get('/adoption/create',
-        [PetController::class, 'createAdoptionForm']
-    )->name('adoption.create');
+    Route::get('/adoption/create', [PetController::class, 'createAdoptionForm'])
+        ->name('adoption.create');
 
-    Route::post('/adoption',
-        [UserController::class, 'store']
-    )->name('adoption.store');
+    Route::post('/adoption', [UserController::class, 'store'])
+        ->name('adoption.store');
 
-    Route::get('/adoption/confirmation/{adoption}',
-        [UserController::class, 'confirmation']
-    )->name('adoption.confirmation');
+    Route::get('/adoption/confirmation/{adoption}', [UserController::class, 'confirmation'])
+        ->name('adoption.confirmation');
 
 
     /*
@@ -154,21 +172,17 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('admin')->name('admin.')->group(function () {
 
-        Route::get('/adoptions',
-            [AdminAdoptionController::class, 'index']
-        )->name('adoptions.index');
+        Route::get('/adoptions', [AdminAdoptionController::class, 'index'])
+            ->name('adoptions.index');
 
-        Route::get('/adoptions/{adoption}',
-            [AdminAdoptionController::class, 'show']
-        )->name('adoptions.show');
+        Route::get('/adoptions/{adoption}', [AdminAdoptionController::class, 'show'])
+            ->name('adoptions.show');
 
-        Route::patch('/adoptions/{adoption}/approve',
-            [AdminAdoptionController::class, 'approve']
-        )->name('adoptions.approve');
+        Route::patch('/adoptions/{adoption}/approve', [AdminAdoptionController::class, 'approve'])
+            ->name('adoptions.approve');
 
-        Route::patch('/adoptions/{adoption}/reject',
-            [AdminAdoptionController::class, 'reject']
-        )->name('adoptions.reject');
+        Route::patch('/adoptions/{adoption}/reject', [AdminAdoptionController::class, 'reject'])
+            ->name('adoptions.reject');
     });
 
 
@@ -178,29 +192,23 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::get('/actor',
-        [ActorController::class, 'index']
-    )->name('actor.index');
+    Route::get('/actor', [ActorController::class, 'index'])
+        ->name('actor.index');
 
-    Route::get('/actor/create',
-        [ActorController::class, 'create']
-    )->name('actor.create');
+    Route::get('/actor/create', [ActorController::class, 'create'])
+        ->name('actor.create');
 
-    Route::post('/actor',
-        [ActorController::class, 'store']
-    )->name('actor.store');
+    Route::post('/actor', [ActorController::class, 'store'])
+        ->name('actor.store');
 
-    Route::get('/actor/{actor}/edit',
-        [ActorController::class, 'edit']
-    )->name('actor.edit');
+    Route::get('/actor/{actor}/edit', [ActorController::class, 'edit'])
+        ->name('actor.edit');
 
-    Route::put('/actor/{actor}',
-        [ActorController::class, 'update']
-    )->name('actor.update');
+    Route::put('/actor/{actor}', [ActorController::class, 'update'])
+        ->name('actor.update');
 
-    Route::delete('/actor/{actor}',
-        [ActorController::class, 'destroy']
-    )->name('actor.destroy');
+    Route::delete('/actor/{actor}', [ActorController::class, 'destroy'])
+        ->name('actor.destroy');
 
 
     /*
@@ -209,29 +217,23 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::get('/movie',
-        [MovieController::class, 'index']
-    )->name('movie.index');
+    Route::get('/movie', [MovieController::class, 'index'])
+        ->name('movie.index');
 
-    Route::get('/movie/create',
-        [MovieController::class, 'create']
-    )->name('movie.create');
+    Route::get('/movie/create', [MovieController::class, 'create'])
+        ->name('movie.create');
 
-    Route::post('/movie',
-        [MovieController::class, 'store']
-    )->name('movie.store');
+    Route::post('/movie', [MovieController::class, 'store'])
+        ->name('movie.store');
 
-    Route::get('/movie/{movie}/edit',
-        [MovieController::class, 'edit']
-    )->name('movie.edit');
+    Route::get('/movie/{movie}/edit', [MovieController::class, 'edit'])
+        ->name('movie.edit');
 
-    Route::put('/movie/{movie}',
-        [MovieController::class, 'update']
-    )->name('movie.update');
+    Route::put('/movie/{movie}', [MovieController::class, 'update'])
+        ->name('movie.update');
 
-    Route::delete('/movie/{movie}',
-        [MovieController::class, 'destroy']
-    )->name('movie.destroy');
+    Route::delete('/movie/{movie}', [MovieController::class, 'destroy'])
+        ->name('movie.destroy');
 });
 
 
