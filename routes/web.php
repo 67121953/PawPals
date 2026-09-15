@@ -20,7 +20,8 @@ Route::get('/', function () {
 })->name('welcome');
 
 // รายการสัตว์เลี้ยง
-Route::get('/pets', [PetController::class, 'index'])->name('pets.index');
+Route::get('/pets', [PetController::class, 'index'])
+    ->name('pets.index');
 
 // หน้าเพจทั่วไป
 Route::get('/pet-care', function () {
@@ -50,7 +51,12 @@ Route::post('/contact', function () {
 
 Route::middleware('auth')->group(function () {
 
-    // Dashboard & Profile
+    /*
+    |--------------------------------------------------------------------------
+    | Dashboard & Profile
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->middleware('verified')->name('dashboard');
@@ -65,18 +71,67 @@ Route::middleware('auth')->group(function () {
         ->name('profile.destroy');
 
 
-    // =====================================================
-    // Pet Show - ดูรายละเอียดสัตว์
-    // User และ Admin สามารถเข้าดูได้
-    // =====================================================
+    /*
+    |--------------------------------------------------------------------------
+    | Pet Management
+    |--------------------------------------------------------------------------
+    |
+    | สำคัญ:
+    | /pets/create ต้องอยู่ก่อน /pets/{pet}
+    | เพราะไม่เช่นนั้น Laravel จะมอง "create" เป็นค่า {pet}
+    |
+    */
 
-    Route::get('/pets/{pet}', [PetController::class, 'show'])
-        ->name('pets.show');
+    // เพิ่มสัตว์เลี้ยง
+    Route::get('/pets/create',
+        [PetController::class, 'create']
+    )->name('pets.create');
+
+    // บันทึกสัตว์เลี้ยง
+    Route::post('/pets',
+        [PetController::class, 'store']
+    )->name('pets.store');
+
+    // แก้ไขสัตว์เลี้ยง
+    Route::get('/pets/{pet}/edit',
+        [PetController::class, 'edit']
+    )->name('pets.edit');
+
+    // อัปเดตสัตว์เลี้ยง
+    Route::put('/pets/{pet}',
+        [PetController::class, 'update']
+    )->name('pets.update');
+
+    // ลบสัตว์เลี้ยง
+    Route::delete('/pets/{pet}',
+        [PetController::class, 'destroy']
+    )->name('pets.destroy');
+
+    // เปลี่ยนสถานะการรับเลี้ยง
+    Route::patch('/pets/{pet}/toggle-adopt',
+        [PetController::class, 'toggleAdopt']
+    )->name('pets.toggle-adopt');
 
 
-    // =====================================================
-    // Adoption
-    // =====================================================
+    /*
+    |--------------------------------------------------------------------------
+    | Pet Show
+    |--------------------------------------------------------------------------
+    |
+    | ต้องวางหลัง /pets/create
+    |
+    */
+
+    Route::get('/pets/{pet}',
+        [PetController::class, 'show']
+    )->name('pets.show');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Adoption
+    |--------------------------------------------------------------------------
+    */
 
     Route::get('/adoption/create',
         [PetController::class, 'createAdoptionForm']
@@ -91,38 +146,11 @@ Route::middleware('auth')->group(function () {
     )->name('adoption.confirmation');
 
 
-    // =====================================================
-    // Pet Management
-    // =====================================================
-
-    Route::get('/pets/create',
-        [PetController::class, 'create']
-    )->name('pets.create');
-
-    Route::post('/pets',
-        [PetController::class, 'store']
-    )->name('pets.store');
-
-    Route::get('/pets/{pet}/edit',
-        [PetController::class, 'edit']
-    )->name('pets.edit');
-
-    Route::put('/pets/{pet}',
-        [PetController::class, 'update']
-    )->name('pets.update');
-
-    Route::delete('/pets/{pet}',
-        [PetController::class, 'destroy']
-    )->name('pets.destroy');
-
-    Route::patch('/pets/{pet}/toggle-adopt',
-        [PetController::class, 'toggleAdopt']
-    )->name('pets.toggle-adopt');
-
-
-    // =====================================================
-    // Admin Adoptions
-    // =====================================================
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Adoptions
+    |--------------------------------------------------------------------------
+    */
 
     Route::prefix('admin')->name('admin.')->group(function () {
 
@@ -144,9 +172,11 @@ Route::middleware('auth')->group(function () {
     });
 
 
-    // =====================================================
-    // Actor Management
-    // =====================================================
+    /*
+    |--------------------------------------------------------------------------
+    | Actor Management
+    |--------------------------------------------------------------------------
+    */
 
     Route::get('/actor',
         [ActorController::class, 'index']
@@ -173,9 +203,11 @@ Route::middleware('auth')->group(function () {
     )->name('actor.destroy');
 
 
-    // =====================================================
-    // Movie Management
-    // =====================================================
+    /*
+    |--------------------------------------------------------------------------
+    | Movie Management
+    |--------------------------------------------------------------------------
+    */
 
     Route::get('/movie',
         [MovieController::class, 'index']
@@ -200,7 +232,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/movie/{movie}',
         [MovieController::class, 'destroy']
     )->name('movie.destroy');
-
 });
 
 
