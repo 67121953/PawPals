@@ -318,7 +318,6 @@
     flex-direction: column;
 
     min-width: 0;
-
     min-height: 0;
 }
 
@@ -337,7 +336,6 @@
     background: #f8fafc;
 
     min-height: 0;
-
     min-width: 0;
 
     box-sizing: border-box;
@@ -346,15 +344,14 @@
 
 /* =========================================================
    MESSAGE ROW
-   ⭐ สำคัญ
-   เปลี่ยนจาก flex เป็น block
-   เพื่อให้ Bubble หดตามข้อความจริง
 ========================================================= */
 
 .pp-msg-row {
-    display: block !important;
+    display: flex;
 
-    width: 100% !important;
+    flex-direction: column;
+
+    width: 100%;
 
     margin-bottom: 14px;
 
@@ -362,7 +359,8 @@
 
     min-width: 0;
 
-    line-height: 1.4;
+    /* สำคัญ */
+    align-items: flex-start;
 }
 
 
@@ -370,15 +368,12 @@
    MESSAGE ALIGN
 ========================================================= */
 
-/* ข้อความของเราอยู่ขวา */
 .pp-msg-row.me {
-    text-align: right !important;
+    align-items: flex-end;
 }
 
-
-/* ข้อความของ Admin อยู่ซ้าย */
 .pp-msg-row.other {
-    text-align: left !important;
+    align-items: flex-start;
 }
 
 
@@ -387,15 +382,7 @@
 ========================================================= */
 
 .pp-msg-name {
-    display: block !important;
-
-    width: auto !important;
-
-    max-width: 78%;
-
-    margin-bottom: 4px;
-
-    padding: 0 6px;
+    display: block;
 
     font-size: 11px;
 
@@ -403,115 +390,130 @@
 
     color: #6b7280;
 
+    margin-bottom: 4px;
+
+    padding: 0 6px;
+
     line-height: 1.3;
 
     box-sizing: border-box;
+
+    max-width: 78%;
 }
 
-
-/* ชื่อของเรา */
 .pp-msg-row.me .pp-msg-name {
-    margin-left: auto;
-
     text-align: right;
 }
 
-
-/* ชื่อของ Admin */
 .pp-msg-row.other .pp-msg-name {
-    margin-right: auto;
-
     text-align: left;
 }
 
 
 /* =========================================================
    MESSAGE BUBBLE
-   ⭐⭐⭐ จุดสำคัญที่สุด
+   ⭐ สำคัญที่สุด
+   กล่องจะพอดีกับข้อความ
 ========================================================= */
 
 .pp-msg-bubble {
 
-    /* ⭐ ให้กรอบหดตามเนื้อหา */
-    display: inline-block !important;
-
-    /* ⭐ ไม่เต็มพื้นที่ */
+    /*
+     * ใช้ fit-content เพื่อให้กล่อง
+     * เริ่มจากขนาดตามข้อความจริง
+     */
     width: fit-content !important;
 
-    /* ⭐ ป้องกันความกว้างขั้นต่ำ */
-    min-width: 0 !important;
-
-    /* ⭐ ขยายได้แต่ไม่เกิน 78% */
+    /*
+     * ไม่ให้กล่องเกินพื้นที่แชต
+     */
     max-width: 78% !important;
 
-    /* ⭐ ห้าม flex ยืด */
-    flex: none !important;
+    /*
+     * ป้องกัน CSS จาก Bootstrap / Global CSS
+     */
+    min-width: 0 !important;
 
-    /* ⭐ ความสูงตามข้อความ */
     height: auto !important;
 
     min-height: 0 !important;
 
-    /* ⭐ ป้องกัน aspect ratio */
-    aspect-ratio: auto !important;
+    /*
+     * ไม่ให้ flex ยืดกล่อง
+     */
+    flex: 0 0 auto !important;
 
-    /* ขนาด */
+    align-self: flex-start;
+
+    /*
+     * ขนาดกล่อง
+     */
     padding: 10px 13px;
 
     border-radius: 16px;
 
+    /*
+     * ตัวหนังสือ
+     */
     font-size: 14px;
 
     line-height: 1.5;
 
-    box-sizing: border-box;
-
-    /* ⭐ ข้อความธรรมดาอยู่ในบรรทัดเดียว */
+    /*
+     * สำคัญ:
+     * ข้อความปกติอยู่บรรทัดเดียว
+     * ถ้ายาวเกิน max-width จึงค่อยตัด
+     */
     white-space: normal;
 
-    /* ⭐ คำยาวมากให้ตัด */
     overflow-wrap: anywhere;
 
     word-break: break-word;
 
+    /*
+     * ป้องกัน box-sizing จาก CSS อื่น
+     */
+    box-sizing: border-box;
+
+    margin: 0;
+
     vertical-align: top;
 
-    margin: 0 !important;
-
-    /* ⭐ ป้องกัน Bootstrap/global CSS */
-    float: none !important;
-
-    position: relative;
-
-    text-align: left !important;
+    text-align: left;
 }
 
 
 /* =========================================================
-   OUR MESSAGE
+   BUBBLE ALIGN
 ========================================================= */
 
 .pp-msg-row.me .pp-msg-bubble {
+    align-self: flex-end;
+}
 
+.pp-msg-row.other .pp-msg-bubble {
+    align-self: flex-start;
+}
+
+
+/* =========================================================
+   ข้อความของเรา
+========================================================= */
+
+.pp-msg-row.me .pp-msg-bubble {
     background: #7c3aed;
 
     color: #fff;
 
     border-bottom-right-radius: 5px;
-
-    /* ⭐ ชิดขวา */
-    margin-left: auto !important;
-
-    margin-right: 0 !important;
 }
 
 
 /* =========================================================
-   ADMIN MESSAGE
+   ข้อความของ Admin
 ========================================================= */
 
 .pp-msg-row.other .pp-msg-bubble {
-
     background: #fff;
 
     color: #1f2937;
@@ -521,11 +523,6 @@
     border-bottom-left-radius: 5px;
 
     box-shadow: 0 1px 2px rgba(0,0,0,.04);
-
-    /* ⭐ ชิดซ้าย */
-    margin-left: 0 !important;
-
-    margin-right: auto !important;
 }
 
 
@@ -534,20 +531,13 @@
 ========================================================= */
 
 .pp-msg-text {
-
-    display: inline !important;
-
-    width: auto !important;
+    display: inline;
 
     white-space: pre-wrap;
 
     overflow-wrap: anywhere;
 
     word-break: break-word;
-
-    margin: 0;
-
-    padding: 0;
 }
 
 
@@ -557,9 +547,14 @@
 
 .pp-msg-time {
 
+    /*
+     * เวลาอยู่บรรทัดใหม่
+     */
     display: block !important;
 
-    width: auto !important;
+    width: max-content !important;
+
+    max-width: 100%;
 
     height: auto !important;
 
@@ -578,20 +573,18 @@
     white-space: nowrap;
 
     box-sizing: border-box;
+}
+
+.pp-msg-row.me .pp-msg-time {
+    margin-left: auto;
 
     text-align: right;
 }
 
-
-/* เวลา Admin */
 .pp-msg-row.other .pp-msg-time {
-    text-align: left !important;
-}
+    margin-right: auto;
 
-
-/* เวลาเรา */
-.pp-msg-row.me .pp-msg-time {
-    text-align: right !important;
+    text-align: left;
 }
 
 
@@ -844,16 +837,13 @@
 
         </div>
 
-
         <button
             id="ppChatClose"
             class="pp-chat-close"
             type="button"
-            aria-label="ปิด"
+            aria-label="ปิดแชต"
         >
-
             &times;
-
         </button>
 
     </div>
@@ -880,11 +870,9 @@
                         type="text"
                         id="ppChatSearch"
                         placeholder="ค้นหาชื่อ / Email..."
-                        autocomplete="off"
                     >
 
                 </div>
-
 
                 <div
                     id="ppChatAdminList"
@@ -927,7 +915,6 @@
 
                 @csrf
 
-
                 <textarea
                     id="ppChatInput"
                     class="pp-chat-input"
@@ -937,11 +924,10 @@
                     required
                 ></textarea>
 
-
                 <button
                     class="pp-chat-send"
                     type="submit"
-                    aria-label="ส่งข้อความ"
+                    aria-label="ส่ง"
                 >
 
                     <i class="fa-solid fa-paper-plane"></i>
@@ -997,33 +983,14 @@
 
 
     /* =========================================================
-       CHECK ELEMENTS
-    ========================================================= */
-
-    if (
-        !button ||
-        !windowEl ||
-        !close ||
-        !body ||
-        !form ||
-        !input ||
-        !badge
-    ) {
-        return;
-    }
-
-
-    /* =========================================================
        USER DATA
     ========================================================= */
 
     const currentUserId =
         Number(@json(auth()->id()));
 
-
     const isAdmin =
         @json(auth()->user()->role === 'admin');
-
 
     const csrf =
         document
@@ -1040,10 +1007,6 @@
     let conversations = [];
 
     let open = false;
-
-    let loadingMessages = false;
-
-    let loadingList = false;
 
 
     /* =========================================================
@@ -1072,15 +1035,12 @@
             return '';
         }
 
-
         const date =
             new Date(dateString);
-
 
         if (Number.isNaN(date.getTime())) {
             return '';
         }
-
 
         return date.toLocaleString(
             'th-TH',
@@ -1169,7 +1129,6 @@
 
                                 </span>
 
-
                                 <span class="pp-msg-time">
 
                                     ${timeText(
@@ -1199,31 +1158,16 @@
 
     async function loadUserChat() {
 
-        if (loadingMessages) {
-            return;
-        }
-
-
-        loadingMessages = true;
-
-
         try {
 
             const res =
                 await fetch(
                     '{{ route('chat.index') }}',
                     {
-                        method: 'GET',
-
                         headers: {
                             'Accept':
-                                'application/json',
-
-                            'X-Requested-With':
-                                'XMLHttpRequest'
-                        },
-
-                        cache: 'no-store'
+                                'application/json'
+                        }
                     }
                 );
 
@@ -1231,7 +1175,7 @@
             if (!res.ok) {
 
                 console.error(
-                    'loadUserChat:',
+                    'โหลดข้อความไม่สำเร็จ:',
                     res.status
                 );
 
@@ -1261,10 +1205,6 @@
                 'loadUserChat error:',
                 error
             );
-
-        } finally {
-
-            loadingMessages = false;
 
         }
 
@@ -1318,11 +1258,6 @@
                         );
 
 
-                    const latest =
-                        c.latest_message?.message
-                        || 'ยังไม่มีข้อความ';
-
-
                     return `
 
                         <button
@@ -1337,16 +1272,15 @@
 
                             ${
                                 unread
-                                    ? `
-                                        <span
-                                            class="pp-chat-admin-unread"
-                                        >
-                                            ${unread}
-                                        </span>
-                                    `
-                                    : ''
+                                ? `
+                                    <span
+                                        class="pp-chat-admin-unread"
+                                    >
+                                        ${unread}
+                                    </span>
+                                `
+                                : ''
                             }
-
 
                             <strong>
 
@@ -1357,7 +1291,6 @@
 
                             </strong>
 
-
                             <small>
 
                                 ${escapeHtml(
@@ -1367,12 +1300,15 @@
 
                             </small>
 
-
                             <small>
 
-                                ${escapeHtml(
-                                    latest
-                                ).substring(0, 35)}
+                                ${
+                                    c.latest_message?.message
+                                    ? escapeHtml(
+                                        c.latest_message.message
+                                    ).substring(0, 35)
+                                    : 'ยังไม่มีข้อความ'
+                                }
 
                             </small>
 
@@ -1392,13 +1328,12 @@
 
                 btn.addEventListener(
                     'click',
-                    async function () {
+                    function () {
 
                         selectedConversation =
                             btn.dataset.conversation;
 
-
-                        await loadAdminConversation(
+                        loadAdminConversation(
                             selectedConversation
                         );
 
@@ -1432,17 +1367,10 @@
                 await fetch(
                     url,
                     {
-                        method: 'GET',
-
                         headers: {
                             'Accept':
-                                'application/json',
-
-                            'X-Requested-With':
-                                'XMLHttpRequest'
-                        },
-
-                        cache: 'no-store'
+                                'application/json'
+                        }
                     }
                 );
 
@@ -1475,7 +1403,6 @@
                 document.getElementById(
                     'ppChatTitle'
                 );
-
 
             const subtitle =
                 document.getElementById(
@@ -1536,31 +1463,16 @@
         }
 
 
-        if (loadingList) {
-            return;
-        }
-
-
-        loadingList = true;
-
-
         try {
 
             const res =
                 await fetch(
                     '{{ route('chat.index') }}',
                     {
-                        method: 'GET',
-
                         headers: {
                             'Accept':
-                                'application/json',
-
-                            'X-Requested-With':
-                                'XMLHttpRequest'
-                        },
-
-                        cache: 'no-store'
+                                'application/json'
+                        }
                     }
                 );
 
@@ -1568,7 +1480,7 @@
             if (!res.ok) {
 
                 console.error(
-                    'loadAdminList:',
+                    'โหลดรายการผู้ติดต่อไม่สำเร็จ:',
                     res.status
                 );
 
@@ -1586,10 +1498,6 @@
 
             applySearch();
 
-
-            /* =================================================
-               เลือก Conversation แรกอัตโนมัติ
-            ================================================= */
 
             if (
                 !selectedConversation &&
@@ -1612,10 +1520,6 @@
                 'loadAdminList error:',
                 error
             );
-
-        } finally {
-
-            loadingList = false;
 
         }
 
@@ -1698,17 +1602,10 @@
                 await fetch(
                     '{{ route('chat.unread') }}',
                     {
-                        method: 'GET',
-
                         headers: {
                             'Accept':
-                                'application/json',
-
-                            'X-Requested-With':
-                                'XMLHttpRequest'
-                        },
-
-                        cache: 'no-store'
+                                'application/json'
+                        }
                     }
                 );
 
@@ -1755,75 +1652,83 @@
        OPEN CHAT
     ========================================================= */
 
-    button.addEventListener(
-        'click',
-        async function () {
+    if (button) {
 
-            open = !open;
+        button.addEventListener(
+            'click',
+            async function () {
+
+                open = !open;
 
 
-            windowEl
-                .classList
-                .toggle(
-                    'open',
-                    open
+                windowEl
+                    .classList
+                    .toggle(
+                        'open',
+                        open
+                    );
+
+
+                windowEl.setAttribute(
+                    'aria-hidden',
+                    String(!open)
                 );
 
 
-            windowEl.setAttribute(
-                'aria-hidden',
-                String(!open)
-            );
+                if (!open) {
+                    return;
+                }
 
 
-            if (!open) {
-                return;
+                if (isAdmin) {
+
+                    await loadAdminList();
+
+                } else {
+
+                    await loadUserChat();
+
+                }
+
+
+                await updateUnread();
+
+
+                if (input) {
+                    input.focus();
+                }
+
             }
+        );
 
-
-            if (isAdmin) {
-
-                await loadAdminList();
-
-            } else {
-
-                await loadUserChat();
-
-            }
-
-
-            await updateUnread();
-
-
-            input.focus();
-
-        }
-    );
+    }
 
 
     /* =========================================================
-       CLOSE CHAT
+       CLOSE
     ========================================================= */
 
-    close.addEventListener(
-        'click',
-        function () {
+    if (close) {
 
-            open = false;
+        close.addEventListener(
+            'click',
+            function () {
 
+                open = false;
 
-            windowEl
-                .classList
-                .remove('open');
+                windowEl
+                    .classList
+                    .remove('open');
 
+                windowEl.setAttribute(
+                    'aria-hidden',
+                    'true'
+                );
 
-            windowEl.setAttribute(
-                'aria-hidden',
-                'true'
-            );
+            }
+        );
 
-        }
-    );
+    }
 
 
     /* =========================================================
@@ -1848,195 +1753,194 @@
        AUTO RESIZE TEXTAREA
     ========================================================= */
 
-    input.addEventListener(
-        'input',
-        function () {
+    if (input) {
 
-            this.style.height = '44px';
+        input.addEventListener(
+            'input',
+            function () {
 
+                this.style.height = '44px';
 
-            this.style.height =
-                Math.min(
-                    this.scrollHeight,
-                    110
-                ) + 'px';
-
-        }
-    );
-
-
-    /* =========================================================
-       ENTER = SEND
-       SHIFT + ENTER = NEW LINE
-    ========================================================= */
-
-    input.addEventListener(
-        'keydown',
-        function (event) {
-
-            if (
-                event.key === 'Enter'
-                &&
-                !event.shiftKey
-            ) {
-
-                event.preventDefault();
-
-
-                form.requestSubmit();
+                this.style.height =
+                    Math.min(
+                        this.scrollHeight,
+                        110
+                    ) + 'px';
 
             }
+        );
 
-        }
-    );
+
+        /* =====================================================
+           ENTER = SEND
+           SHIFT + ENTER = NEW LINE
+        ===================================================== */
+
+        input.addEventListener(
+            'keydown',
+            function (event) {
+
+                if (
+                    event.key === 'Enter'
+                    &&
+                    !event.shiftKey
+                ) {
+
+                    event.preventDefault();
+
+                    form.requestSubmit();
+
+                }
+
+            }
+        );
+
+    }
 
 
     /* =========================================================
        SEND MESSAGE
     ========================================================= */
 
-    form.addEventListener(
-        'submit',
-        async function (event) {
+    if (form) {
 
-            event.preventDefault();
+        form.addEventListener(
+            'submit',
+            async function (event) {
 
-
-            const message =
-                input.value.trim();
+                event.preventDefault();
 
 
-            if (!message) {
-                return;
-            }
+                const message =
+                    input.value.trim();
 
 
-            if (
-                isAdmin &&
-                !selectedConversation
-            ) {
-
-                alert(
-                    'กรุณาเลือกผู้ติดต่อก่อนส่งข้อความ'
-                );
-
-                return;
-            }
+                if (!message) {
+                    return;
+                }
 
 
-            try {
-
-                const payload = {
-
-                    message: message,
-
-                    conversation_id:
-                        isAdmin
-                            ? selectedConversation
-                            : null
-
-                };
-
-
-                const res =
-                    await fetch(
-                        '{{ route('chat.send') }}',
-                        {
-                            method: 'POST',
-
-                            headers: {
-
-                                'Content-Type':
-                                    'application/json',
-
-                                'Accept':
-                                    'application/json',
-
-                                'X-CSRF-TOKEN':
-                                    csrf,
-
-                                'X-Requested-With':
-                                    'XMLHttpRequest'
-
-                            },
-
-                            body:
-                                JSON.stringify(
-                                    payload
-                                )
-
-                        }
-                    );
-
-
-                if (!res.ok) {
-
-                    const error =
-                        await res.json()
-                            .catch(
-                                function () {
-                                    return null;
-                                }
-                            );
-
-
-                    console.error(
-                        'send error:',
-                        error
-                    );
-
+                if (
+                    isAdmin &&
+                    !selectedConversation
+                ) {
 
                     alert(
-                        error?.message
-                        ||
-                        'ไม่สามารถส่งข้อความได้ กรุณาลองใหม่'
+                        'กรุณาเลือกผู้ติดต่อก่อนส่งข้อความ'
                     );
-
 
                     return;
                 }
 
 
-                input.value = '';
+                try {
 
-                input.style.height =
-                    '44px';
+                    const payload = {
+
+                        message: message,
+
+                        conversation_id:
+                            isAdmin
+                                ? selectedConversation
+                                : null
+
+                    };
 
 
-                if (isAdmin) {
+                    const res =
+                        await fetch(
+                            '{{ route('chat.send') }}',
+                            {
+                                method: 'POST',
 
-                    await loadAdminConversation(
-                        selectedConversation
+                                headers: {
+
+                                    'Content-Type':
+                                        'application/json',
+
+                                    'Accept':
+                                        'application/json',
+
+                                    'X-CSRF-TOKEN':
+                                        csrf
+
+                                },
+
+                                body:
+                                    JSON.stringify(
+                                        payload
+                                    )
+
+                            }
+                        );
+
+
+                    if (!res.ok) {
+
+                        const error =
+                            await res.json()
+                                .catch(
+                                    () => null
+                                );
+
+
+                        console.error(
+                            'send error:',
+                            error
+                        );
+
+
+                        alert(
+                            error?.message
+                            ||
+                            'ไม่สามารถส่งข้อความได้ กรุณาลองใหม่'
+                        );
+
+                        return;
+                    }
+
+
+                    input.value = '';
+
+                    input.style.height =
+                        '44px';
+
+
+                    if (isAdmin) {
+
+                        await loadAdminConversation(
+                            selectedConversation
+                        );
+
+                        await loadAdminList();
+
+                    } else {
+
+                        await loadUserChat();
+
+                    }
+
+
+                    await updateUnread();
+
+                } catch (error) {
+
+                    console.error(
+                        'send message error:',
+                        error
                     );
 
 
-                    await loadAdminList();
-
-                } else {
-
-                    await loadUserChat();
+                    alert(
+                        'เกิดข้อผิดพลาดในการส่งข้อความ'
+                    );
 
                 }
 
-
-                await updateUnread();
-
-            } catch (error) {
-
-                console.error(
-                    'send message error:',
-                    error
-                );
-
-
-                alert(
-                    'เกิดข้อผิดพลาดในการส่งข้อความ'
-                );
-
             }
+        );
 
-        }
-    );
+    }
 
 
     /* =========================================================
@@ -2068,7 +1972,6 @@
 
                     selectedConversation =
                         currentConversation;
-
 
                     await loadAdminConversation(
                         currentConversation
