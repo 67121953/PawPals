@@ -25,6 +25,13 @@ class ChatController extends Controller
     |--------------------------------------------------------------------------
     | Conversation ของ User ปัจจุบัน
     |--------------------------------------------------------------------------
+    |
+    | User 1 คน จะมี Conversation หลัก 1 รายการ
+    |
+    | Conversation นี้ไม่ได้ผูกกับ Admin คนใดคนหนึ่ง
+    |
+    | ดังนั้น Admin ทุกคนสามารถเข้ามาดูและตอบได้
+    |
     */
 
     private function conversationForUser(): Conversation
@@ -39,13 +46,21 @@ class ChatController extends Controller
     |--------------------------------------------------------------------------
     | เปิด Chat
     |--------------------------------------------------------------------------
+    |
+    | Admin:
+    |     เห็น Conversation ของ User ทุกคน
+    |
+    | User:
+    |     เห็น Conversation ของตัวเอง
+    |
     */
 
     public function index()
     {
+
         /*
         |--------------------------------------------------------------------------
-        | Admin
+        | Admin ทุกคน
         |--------------------------------------------------------------------------
         */
 
@@ -57,16 +72,34 @@ class ChatController extends Controller
                 ])
                 ->withCount([
                     'messages as unread_count' => function ($query) {
-                        $query->whereNull('read_at')
-                            ->where('sender_id', '!=', Auth::id());
+
+                        $query
+                            ->whereNull('read_at')
+                            ->where(
+                                'sender_id',
+                                '!=',
+                                Auth::id()
+                            );
+
                     },
                 ])
                 ->latest('updated_at')
                 ->get();
 
+
             return response()->json([
+
                 'admin' => true,
+
+                /*
+                |--------------------------------------------------------------------------
+                | Admin คนไหน Login เข้ามา
+                | ก็จะเห็น Conversation ของ User ทุกคน
+                |--------------------------------------------------------------------------
+                */
+
                 'conversations' => $conversations,
+
             ]);
         }
 
@@ -79,27 +112,38 @@ class ChatController extends Controller
 
         $conversation = $this->conversationForUser();
 
-        $messages = $conversation->messages()
+
+        $messages = $conversation
+            ->messages()
             ->with('sender:id,name,email,role')
             ->orderBy('id')
             ->get();
 
+
         /*
+        |--------------------------------------------------------------------------
         | เมื่อ User เปิด Chat
-        | ให้ข้อความจาก Admin ถูกทำเครื่องหมายว่าอ่านแล้ว
+        | ให้ข้อความจาก Admin ถูกอ่านแล้ว
+        |--------------------------------------------------------------------------
         */
 
-        $conversation->messages()
+        $conversation
+            ->messages()
             ->where('sender_id', '!=', Auth::id())
             ->whereNull('read_at')
             ->update([
                 'read_at' => now(),
             ]);
 
+
         return response()->json([
+
             'admin' => false,
+
             'conversation' => $conversation->load('user'),
+
             'messages' => $messages,
+
         ]);
     }
 
@@ -114,52 +158,101 @@ class ChatController extends Controller
     {
         $user = Auth::user();
 
+
         $conversationId = $request->get('conversation_id');
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | ตรวจสอบ Conversation
+        |--------------------------------------------------------------------------
+        */
+
         if (!$conversationId) {
+
             return response()->json([
+
                 'success' => false,
+
                 'message' => 'ไม่พบ Conversation',
+
             ], 400);
         }
 
-        $conversation = Conversation::findOrFail($conversationId);
+
+        $conversation = Conversation::findOrFail(
+            $conversationId
+        );
+
 
         /*
-        | Admin สามารถดูทุก Conversation
-        | User ดูได้เฉพาะ Conversation ของตัวเอง
+        |--------------------------------------------------------------------------
+        | ตรวจสอบสิทธิ์
+        |--------------------------------------------------------------------------
+        |
+        | Admin ทุกคน:
+        |     ดูได้ทุก Conversation
+        |
+        | User:
+        |     ดูได้เฉพาะ Conversation ของตัวเอง
+        |
         */
 
         if (
             !$this->isAdmin() &&
             $conversation->user_id !== $user->id
         ) {
+
             return response()->json([
+
                 'success' => false,
+
                 'message' => 'ไม่มีสิทธิ์เข้าถึงบทสนทนานี้',
+
             ], 403);
         }
 
-        $messages = $conversation->messages()
+
+        /*
+        |--------------------------------------------------------------------------
+        | ดึงข้อความ
+        |--------------------------------------------------------------------------
+        */
+
+        $messages = $conversation
+            ->messages()
             ->with('sender:id,name,email,role')
             ->orderBy('id')
             ->get();
 
+
         /*
-        | เมื่อเปิดข้อความ ให้ถือว่าอ่านแล้ว
+        |--------------------------------------------------------------------------
+        | ทำเครื่องหมายว่าอ่านแล้ว
+        |--------------------------------------------------------------------------
         */
 
-        $conversation->messages()
-            ->where('sender_id', '!=', $user->id)
+        $conversation
+            ->messages()
+            ->where(
+                'sender_id',
+                '!=',
+                $user->id
+            )
             ->whereNull('read_at')
             ->update([
                 'read_at' => now(),
             ]);
 
+
         return response()->json([
+
             'success' => true,
+
             'conversation' => $conversation->load('user'),
+
             'messages' => $messages,
+
         ]);
     }
 
@@ -168,41 +261,71 @@ class ChatController extends Controller
     |--------------------------------------------------------------------------
     | ดึง Conversation รายตัว
     |--------------------------------------------------------------------------
+    |
+    | ใช้สำหรับ Admin เลือก User แต่ละคน
+    |
     */
 
     public function conversation(Conversation $conversation)
     {
+
         /*
-        | Admin ดูได้ทุก Conversation
-        | User ดูเฉพาะของตัวเอง
+        |--------------------------------------------------------------------------
+        | Admin ทุกคนดูได้
+        | User ดูได้เฉพาะของตัวเอง
+        |--------------------------------------------------------------------------
         */
 
         abort_unless(
+
             $this->isAdmin() ||
             $conversation->user_id === Auth::id(),
+
             403
+
         );
 
-        $messages = $conversation->messages()
+
+        /*
+        |--------------------------------------------------------------------------
+        | ดึงข้อความ
+        |--------------------------------------------------------------------------
+        */
+
+        $messages = $conversation
+            ->messages()
             ->with('sender:id,name,email,role')
             ->orderBy('id')
             ->get();
 
+
         /*
-        | ทำเครื่องหมายข้อความที่ส่งมาจากอีกฝ่ายว่าอ่านแล้ว
+        |--------------------------------------------------------------------------
+        | ทำเครื่องหมายว่าอ่านแล้ว
+        |--------------------------------------------------------------------------
         */
 
-        $conversation->messages()
-            ->where('sender_id', '!=', Auth::id())
+        $conversation
+            ->messages()
+            ->where(
+                'sender_id',
+                '!=',
+                Auth::id()
+            )
             ->whereNull('read_at')
             ->update([
                 'read_at' => now(),
             ]);
 
+
         return response()->json([
+
             'success' => true,
+
             'conversation' => $conversation->load('user'),
+
             'messages' => $messages,
+
         ]);
     }
 
@@ -211,11 +334,31 @@ class ChatController extends Controller
     |--------------------------------------------------------------------------
     | ส่งข้อความ
     |--------------------------------------------------------------------------
+    |
+    | User:
+    |     ส่งเข้า Conversation ของตัวเอง
+    |
+    | Admin:
+    |     เลือก Conversation ของ User
+    |     แล้วตอบกลับ
+    |
+    | สำคัญ:
+    |     Admin ไม่ได้ถูกระบุเป็นรายบุคคล
+    |     Admin ทุกคนสามารถตอบ Conversation เดียวกันได้
+    |
     */
 
     public function send(Request $request)
     {
+
+        /*
+        |--------------------------------------------------------------------------
+        | Validate
+        |--------------------------------------------------------------------------
+        */
+
         $validated = $request->validate([
+
             'message' => [
                 'required',
                 'string',
@@ -227,6 +370,7 @@ class ChatController extends Controller
                 'integer',
                 'exists:conversations,id',
             ],
+
         ]);
 
 
@@ -238,12 +382,29 @@ class ChatController extends Controller
 
         if ($this->isAdmin()) {
 
+            /*
+            |--------------------------------------------------------------------------
+            | Admin ต้องเลือก Conversation ของ User
+            |--------------------------------------------------------------------------
+            */
+
             if (empty($validated['conversation_id'])) {
+
                 return response()->json([
+
                     'success' => false,
+
                     'message' => 'กรุณาเลือกผู้ติดต่อ',
+
                 ], 422);
             }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Admin สามารถตอบ Conversation ของ User คนใดก็ได้
+            |--------------------------------------------------------------------------
+            */
 
             $conversation = Conversation::findOrFail(
                 $validated['conversation_id']
@@ -259,6 +420,12 @@ class ChatController extends Controller
 
         else {
 
+            /*
+            |--------------------------------------------------------------------------
+            | User ส่งได้เฉพาะ Conversation ของตัวเอง
+            |--------------------------------------------------------------------------
+            */
+
             $conversation = $this->conversationForUser();
         }
 
@@ -269,62 +436,130 @@ class ChatController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $message = $conversation->messages()->create([
-            'sender_id' => Auth::id(),
-            'message' => trim($validated['message']),
-        ]);
+        $message = $conversation
+            ->messages()
+            ->create([
+
+                'sender_id' => Auth::id(),
+
+                'message' => trim(
+                    $validated['message']
+                ),
+
+            ]);
+
 
         /*
-        | อัปเดตเวลาของ Conversation
+        |--------------------------------------------------------------------------
+        | อัปเดต Conversation
+        |--------------------------------------------------------------------------
         */
 
         $conversation->touch();
 
+
         /*
-        | โหลดข้อมูลผู้ส่งกลับไปด้วย
+        |--------------------------------------------------------------------------
+        | โหลดข้อมูลผู้ส่ง
+        |--------------------------------------------------------------------------
         */
 
         $message->load(
             'sender:id,name,email,role'
         );
 
+
         return response()->json([
+
             'success' => true,
+
             'message' => $message,
+
         ]);
     }
 
 
     /*
     |--------------------------------------------------------------------------
-    | ส่งข้อความจาก Contact
+    | ส่งข้อความจากหน้า Contact
     |--------------------------------------------------------------------------
+    |
+    | ข้อความจะถูกส่งเข้า Conversation ของ User
+    |
+    | ไม่ระบุ Admin คนใดคนหนึ่ง
+    |
+    | Admin ทุกคนสามารถเห็นข้อความนี้ได้
+    |
     */
 
     public function sendContact(Request $request)
     {
+
+        /*
+        |--------------------------------------------------------------------------
+        | Validate
+        |--------------------------------------------------------------------------
+        */
+
         $validated = $request->validate([
+
             'message' => [
                 'required',
                 'string',
                 'max:5000',
             ],
+
         ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | หา Conversation ของ User
+        |--------------------------------------------------------------------------
+        */
 
         $conversation = $this->conversationForUser();
 
-        $message = $conversation->messages()->create([
-            'sender_id' => Auth::id(),
-            'message' => trim($validated['message']),
-        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | สร้างข้อความ
+        |--------------------------------------------------------------------------
+        */
+
+        $message = $conversation
+            ->messages()
+            ->create([
+
+                'sender_id' => Auth::id(),
+
+                'message' => trim(
+                    $validated['message']
+                ),
+
+            ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | อัปเดตเวลา Conversation
+        |--------------------------------------------------------------------------
+        */
 
         $conversation->touch();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | กลับหน้า Contact
+        |--------------------------------------------------------------------------
+        */
 
         return redirect()
             ->route('contact')
             ->with(
                 'success',
-                'ส่งข้อความเรียบร้อยแล้ว คุณสามารถพูดคุยกับ Admin ต่อได้ผ่านกล่อง Chat'
+                'ส่งข้อความเรียบร้อยแล้ว ข้อความของคุณถูกส่งถึงทีม Admin ทุกคนแล้ว'
             );
     }
 
@@ -333,20 +568,32 @@ class ChatController extends Controller
     |--------------------------------------------------------------------------
     | จำนวนข้อความที่ยังไม่ได้อ่าน
     |--------------------------------------------------------------------------
+    |
+    | Admin:
+    |     นับข้อความใหม่จาก User ทุกคน
+    |
+    | User:
+    |     นับข้อความใหม่จาก Admin
+    |
     */
 
     public function unread()
     {
+
         /*
         |--------------------------------------------------------------------------
-        | Admin
+        | Admin ทุกคน
         |--------------------------------------------------------------------------
         */
 
         if ($this->isAdmin()) {
 
             $count = Message::whereNull('read_at')
-                ->where('sender_id', '!=', Auth::id())
+                ->where(
+                    'sender_id',
+                    '!=',
+                    Auth::id()
+                )
                 ->whereHas('conversation')
                 ->count();
         }
@@ -365,16 +612,27 @@ class ChatController extends Controller
                 Auth::id()
             )->first();
 
+
             $count = $conversation
-                ? $conversation->messages()
+
+                ? $conversation
+                    ->messages()
                     ->whereNull('read_at')
-                    ->where('sender_id', '!=', Auth::id())
+                    ->where(
+                        'sender_id',
+                        '!=',
+                        Auth::id()
+                    )
                     ->count()
+
                 : 0;
         }
 
+
         return response()->json([
+
             'count' => $count,
+
         ]);
     }
 
@@ -387,41 +645,79 @@ class ChatController extends Controller
 
     public function markAsRead(Request $request)
     {
+
+        /*
+        |--------------------------------------------------------------------------
+        | Validate
+        |--------------------------------------------------------------------------
+        */
+
         $validated = $request->validate([
+
             'conversation_id' => [
                 'required',
                 'integer',
                 'exists:conversations,id',
             ],
+
         ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | หา Conversation
+        |--------------------------------------------------------------------------
+        */
 
         $conversation = Conversation::findOrFail(
             $validated['conversation_id']
         );
 
+
         /*
+        |--------------------------------------------------------------------------
         | ตรวจสอบสิทธิ์
+        |--------------------------------------------------------------------------
+        |
+        | Admin ทุกคนสามารถ Mark Read ได้
+        |
+        | User อ่านได้เฉพาะ Conversation ของตัวเอง
+        |
         */
 
         abort_unless(
+
             $this->isAdmin() ||
             $conversation->user_id === Auth::id(),
+
             403
+
         );
 
+
         /*
-        | เปลี่ยนข้อความของอีกฝ่ายเป็นอ่านแล้ว
+        |--------------------------------------------------------------------------
+        | เปลี่ยนสถานะข้อความ
+        |--------------------------------------------------------------------------
         */
 
-        $conversation->messages()
+        $conversation
+            ->messages()
             ->whereNull('read_at')
-            ->where('sender_id', '!=', Auth::id())
+            ->where(
+                'sender_id',
+                '!=',
+                Auth::id()
+            )
             ->update([
                 'read_at' => now(),
             ]);
 
+
         return response()->json([
+
             'success' => true,
+
         ]);
     }
 }
