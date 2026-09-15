@@ -2,668 +2,809 @@
 
 <style>
 
-    /* =========================================================
-       CHAT BUTTON
-    ========================================================= */
+/* =========================================================
+   CHAT BUTTON
+========================================================= */
 
-    .pp-chat-button {
-        position: fixed;
-        right: 24px;
-        bottom: 24px;
+.pp-chat-button {
+    position: fixed;
 
-        width: 58px;
-        height: 58px;
+    right: 24px;
+    bottom: 24px;
 
-        border: 0;
-        border-radius: 50%;
+    width: 58px;
+    height: 58px;
 
-        background: #7c3aed;
-        color: #fff;
+    border: 0;
+    border-radius: 50%;
 
-        box-shadow: 0 10px 30px rgba(0,0,0,.20);
+    background: #7c3aed;
+    color: #fff;
 
-        z-index: 9999;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .20);
 
-        cursor: pointer;
+    z-index: 9999;
 
-        font-size: 22px;
-    }
+    cursor: pointer;
 
+    font-size: 22px;
 
-    /* =========================================================
-       BADGE
-    ========================================================= */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-    .pp-chat-badge {
-        position: absolute;
-
-        top: -4px;
-        right: -2px;
-
-        min-width: 22px;
-        height: 22px;
-
-        padding: 0 6px;
-
-        border-radius: 999px;
-
-        background: #ef4444;
-        color: #fff;
-
-        font-size: 12px;
-
-        display: none;
-
-        align-items: center;
-        justify-content: center;
-
-        font-weight: 700;
-
-        border: 2px solid #fff;
-    }
+.pp-chat-button:hover {
+    background: #6d28d9;
+}
 
 
-    /* =========================================================
-       CHAT WINDOW
-    ========================================================= */
+/* =========================================================
+   BADGE
+========================================================= */
+
+.pp-chat-badge {
+    position: absolute;
+
+    top: -4px;
+    right: -2px;
+
+    min-width: 22px;
+    height: 22px;
+
+    padding: 0 6px;
+
+    border-radius: 999px;
+
+    background: #ef4444;
+    color: #fff;
+
+    font-size: 12px;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    font-weight: 700;
+
+    border: 2px solid #fff;
+}
+
+
+/* =========================================================
+   CHAT WINDOW
+========================================================= */
+
+.pp-chat-window {
+    position: fixed;
+
+    right: 24px;
+    bottom: 94px;
+
+    width: 620px;
+
+    max-width: calc(100vw - 32px);
+
+    height: 560px;
+
+    background: #fff;
+
+    border-radius: 18px;
+
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .20);
+
+    overflow: hidden;
+
+    z-index: 9998;
+
+    display: none;
+
+    flex-direction: column;
+
+    border: 1px solid #eee;
+}
+
+
+.pp-chat-window.open {
+    display: flex;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.pp-chat-header {
+    background: #7c3aed;
+
+    color: #fff;
+
+    padding: 14px 16px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    flex-shrink: 0;
+}
+
+
+.pp-chat-header strong {
+    display: block;
+
+    font-size: 15px;
+
+    font-weight: 700;
+}
+
+
+.pp-chat-header small {
+    display: block;
+
+    opacity: .85;
+
+    font-size: 12px;
+
+    margin-top: 2px;
+}
+
+
+.pp-chat-close {
+    border: 0;
+
+    background: transparent;
+
+    color: #fff;
+
+    font-size: 22px;
+
+    cursor: pointer;
+
+    width: 32px;
+
+    height: 32px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+}
+
+
+.pp-chat-close:hover {
+    background: rgba(255, 255, 255, .15);
+}
+
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
+.pp-chat-content {
+    display: flex;
+
+    flex: 1;
+
+    min-height: 0;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   ADMIN PANEL
+========================================================= */
+
+.pp-chat-admin-panel {
+    width: 220px;
+
+    flex-shrink: 0;
+
+    border-right: 1px solid #eee;
+
+    background: #fff;
+
+    display: flex;
+
+    flex-direction: column;
+
+    min-height: 0;
+}
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.pp-chat-search {
+    padding: 10px;
+
+    border-bottom: 1px solid #eee;
+
+    flex-shrink: 0;
+}
+
+
+.pp-chat-search input {
+    width: 100%;
+
+    border: 1px solid #ddd;
+
+    border-radius: 10px;
+
+    padding: 8px 10px;
+
+    outline: none;
+
+    font-size: 13px;
+
+    box-sizing: border-box;
+}
+
+
+.pp-chat-search input:focus {
+    border-color: #7c3aed;
+
+    box-shadow: 0 0 0 2px rgba(124, 58, 237, .10);
+}
+
+
+/* =========================================================
+   ADMIN LIST
+========================================================= */
+
+.pp-chat-admin-list {
+    flex: 1;
+
+    overflow-y: auto;
+
+    min-height: 0;
+}
+
+
+.pp-chat-admin-item {
+    width: 100%;
+
+    text-align: left;
+
+    border: 0;
+
+    background: #fff;
+
+    padding: 12px;
+
+    border-bottom: 1px solid #f1f1f1;
+
+    cursor: pointer;
+
+    transition: .15s;
+
+    box-sizing: border-box;
+}
+
+
+.pp-chat-admin-item:hover {
+    background: #f5f3ff;
+}
+
+
+.pp-chat-admin-item.selected {
+    background: #ede9fe;
+}
+
+
+.pp-chat-admin-item strong {
+    display: block;
+
+    font-size: 13px;
+
+    color: #1f2937;
+
+    padding-right: 25px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+.pp-chat-admin-item small {
+    display: block;
+
+    font-size: 10px;
+
+    color: #6b7280;
+
+    margin-top: 3px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+.pp-chat-admin-unread {
+    float: right;
+
+    background: #ef4444;
+
+    color: #fff;
+
+    border-radius: 999px;
+
+    padding: 2px 6px;
+
+    font-size: 10px;
+}
+
+
+.pp-chat-no-user {
+    padding: 25px 15px;
+
+    text-align: center;
+
+    color: #9ca3af;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   CHAT MAIN
+========================================================= */
+
+.pp-chat-main {
+    flex: 1;
+
+    display: flex;
+
+    flex-direction: column;
+
+    min-width: 0;
+
+    min-height: 0;
+}
+
+
+/* =========================================================
+   MESSAGE BODY
+========================================================= */
+
+.pp-chat-body {
+    flex: 1;
+
+    overflow-y: auto;
+
+    padding: 18px 16px;
+
+    background: #f8fafc;
+
+    min-height: 0;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   MESSAGE ROW
+   แยกชื่อออกจาก Bubble
+========================================================= */
+
+.pp-msg-row {
+    display: flex;
+
+    flex-direction: column;
+
+    width: 100%;
+
+    margin-bottom: 14px;
+
+    /*
+     * สำคัญ
+     * ป้องกัน Bubble ขยายเต็มความกว้าง
+     */
+    align-items: flex-start;
+}
+
+
+/* =========================================================
+   OUR MESSAGE
+   อยู่ด้านขวา
+========================================================= */
+
+.pp-msg-row.me {
+    align-items: flex-end;
+}
+
+
+/* =========================================================
+   OTHER MESSAGE
+   อยู่ด้านซ้าย
+========================================================= */
+
+.pp-msg-row.other {
+    align-items: flex-start;
+}
+
+
+/* =========================================================
+   SENDER NAME
+   ชื่ออยู่ด้านบน Bubble
+========================================================= */
+
+.pp-msg-name {
+    font-size: 11px;
+
+    font-weight: 600;
+
+    color: #6b7280;
+
+    margin-bottom: 4px;
+
+    padding: 0 6px;
+
+    line-height: 1.3;
+}
+
+
+/* ชื่อของเรา */
+
+.pp-msg-row.me .pp-msg-name {
+    text-align: right;
+}
+
+
+/* ชื่อของอีกฝ่าย */
+
+.pp-msg-row.other .pp-msg-name {
+    text-align: left;
+}
+
+
+/* =========================================================
+   MESSAGE BUBBLE
+========================================================= */
+
+.pp-msg-bubble {
+
+    /*
+     * สำคัญที่สุด
+     * ให้กรอบมีขนาดตามข้อความ
+     */
+    display: inline-block;
+
+    width: fit-content;
+
+    /*
+     * ถ้าข้อความยาวเกินพื้นที่
+     * จะจำกัดความกว้างและขึ้นบรรทัดใหม่
+     */
+    max-width: 78%;
+
+    padding: 10px 13px;
+
+    border-radius: 16px;
+
+    line-height: 1.5;
+
+    font-size: 14px;
+
+    /*
+     * รักษาการขึ้นบรรทัดใหม่
+     */
+    white-space: pre-wrap;
+
+    /*
+     * ป้องกันข้อความยาวติดกัน
+     */
+    word-break: break-word;
+
+    overflow-wrap: anywhere;
+
+    /*
+     * ไม่ให้ padding ทำให้ขนาดผิด
+     */
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   OUR BUBBLE
+========================================================= */
+
+.pp-msg-row.me .pp-msg-bubble {
+    background: #7c3aed;
+
+    color: #fff;
+
+    border-bottom-right-radius: 5px;
+}
+
+
+/* =========================================================
+   OTHER BUBBLE
+========================================================= */
+
+.pp-msg-row.other .pp-msg-bubble {
+    background: #fff;
+
+    color: #1f2937;
+
+    border: 1px solid #e5e7eb;
+
+    border-bottom-left-radius: 5px;
+
+    box-shadow: 0 1px 2px rgba(0, 0, 0, .04);
+}
+
+
+/* =========================================================
+   MESSAGE TIME
+========================================================= */
+
+.pp-msg-time {
+    display: block;
+
+    margin-top: 5px;
+
+    font-size: 9px;
+
+    line-height: 1;
+
+    opacity: .65;
+}
+
+
+/* เวลาในข้อความเรา */
+
+.pp-msg-row.me .pp-msg-time {
+    text-align: right;
+}
+
+
+/* เวลาในข้อความอีกฝ่าย */
+
+.pp-msg-row.other .pp-msg-time {
+    text-align: left;
+}
+
+
+/* =========================================================
+   EMPTY CHAT
+========================================================= */
+
+.pp-chat-empty {
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    color: #9ca3af;
+
+    padding: 20px;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   MESSAGE FORM
+========================================================= */
+
+.pp-chat-form {
+    display: flex;
+
+    align-items: flex-end;
+
+    gap: 8px;
+
+    padding: 12px;
+
+    border-top: 1px solid #eee;
+
+    background: #fff;
+
+    flex-shrink: 0;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   TEXT INPUT
+========================================================= */
+
+.pp-chat-input {
+    flex: 1;
+
+    width: 100%;
+
+    min-height: 44px;
+
+    max-height: 110px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 14px;
+
+    padding: 11px 14px;
+
+    outline: none;
+
+    resize: none;
+
+    overflow-y: auto;
+
+    font-size: 14px;
+
+    line-height: 1.4;
+
+    font-family: inherit;
+
+    box-sizing: border-box;
+
+    background: #fff;
+}
+
+
+.pp-chat-input:focus {
+    border-color: #7c3aed;
+
+    box-shadow: 0 0 0 2px rgba(124, 58, 237, .10);
+}
+
+
+.pp-chat-input::placeholder {
+    color: #9ca3af;
+}
+
+
+/* =========================================================
+   SEND BUTTON
+========================================================= */
+
+.pp-chat-send {
+    width: 44px;
+
+    height: 44px;
+
+    flex-shrink: 0;
+
+    border: 0;
+
+    border-radius: 50%;
+
+    background: #7c3aed;
+
+    color: #fff;
+
+    cursor: pointer;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    transition: .15s;
+}
+
+
+.pp-chat-send:hover {
+    background: #6d28d9;
+
+    transform: translateY(-1px);
+}
+
+
+.pp-chat-send:active {
+    transform: scale(.95);
+}
+
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+.pp-chat-body::-webkit-scrollbar,
+.pp-chat-admin-list::-webkit-scrollbar {
+    width: 7px;
+}
+
+
+.pp-chat-body::-webkit-scrollbar-track,
+.pp-chat-admin-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+.pp-chat-body::-webkit-scrollbar-thumb,
+.pp-chat-admin-list::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+
+    border-radius: 10px;
+}
+
+
+.pp-chat-body::-webkit-scrollbar-thumb:hover,
+.pp-chat-admin-list::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
 
     .pp-chat-window {
-        position: fixed;
+        right: 8px;
 
-        right: 24px;
-        bottom: 94px;
+        bottom: 82px;
 
-        width: 620px;
-        max-width: calc(100vw - 32px);
+        width: calc(100vw - 16px);
 
-        height: 560px;
-
-        background: #fff;
-
-        border-radius: 18px;
-
-        box-shadow: 0 20px 60px rgba(0,0,0,.20);
-
-        overflow: hidden;
-
-        z-index: 9998;
-
-        display: none;
-
-        flex-direction: column;
-
-        border: 1px solid #eee;
+        height: 70vh;
     }
 
-
-    .pp-chat-window.open {
-        display: flex;
-    }
-
-
-    /* =========================================================
-       HEADER
-    ========================================================= */
-
-    .pp-chat-header {
-        background: #7c3aed;
-
-        color: #fff;
-
-        padding: 14px 16px;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: space-between;
-
-        flex-shrink: 0;
-    }
-
-
-    .pp-chat-header strong {
-        display: block;
-
-        font-size: 15px;
-    }
-
-
-    .pp-chat-header small {
-        opacity: .85;
-
-        font-size: 12px;
-    }
-
-
-    .pp-chat-close {
-        border: 0;
-
-        background: transparent;
-
-        color: #fff;
-
-        font-size: 22px;
-
-        cursor: pointer;
-    }
-
-
-    /* =========================================================
-       MAIN CONTENT
-    ========================================================= */
-
-    .pp-chat-content {
-        display: flex;
-
-        flex: 1;
-
-        min-height: 0;
-    }
-
-
-    /* =========================================================
-       ADMIN PANEL
-    ========================================================= */
 
     .pp-chat-admin-panel {
-        width: 220px;
-
-        flex-shrink: 0;
-
-        border-right: 1px solid #eee;
-
-        background: #fff;
-
-        display: flex;
-
-        flex-direction: column;
-
-        min-height: 0;
+        width: 145px;
     }
 
-
-    .pp-chat-search {
-        padding: 10px;
-
-        border-bottom: 1px solid #eee;
-
-        flex-shrink: 0;
-    }
-
-
-    .pp-chat-search input {
-        width: 100%;
-
-        border: 1px solid #ddd;
-
-        border-radius: 10px;
-
-        padding: 8px 10px;
-
-        outline: none;
-
-        font-size: 13px;
-    }
-
-
-    .pp-chat-search input:focus {
-        border-color: #7c3aed;
-
-        box-shadow: 0 0 0 2px rgba(124,58,237,.10);
-    }
-
-
-    .pp-chat-admin-list {
-        flex: 1;
-
-        overflow-y: auto;
-    }
-
-
-    .pp-chat-admin-item {
-        width: 100%;
-
-        text-align: left;
-
-        border: 0;
-
-        background: #fff;
-
-        padding: 12px;
-
-        border-bottom: 1px solid #f1f1f1;
-
-        cursor: pointer;
-
-        transition: .15s;
-    }
-
-
-    .pp-chat-admin-item:hover {
-        background: #f5f3ff;
-    }
-
-
-    .pp-chat-admin-item.selected {
-        background: #ede9fe;
-    }
-
-
-    .pp-chat-admin-item strong {
-        display: block;
-
-        font-size: 13px;
-
-        color: #1f2937;
-
-        padding-right: 25px;
-    }
-
-
-    .pp-chat-admin-item small {
-        display: block;
-
-        font-size: 10px;
-
-        color: #6b7280;
-
-        margin-top: 3px;
-
-        overflow: hidden;
-
-        text-overflow: ellipsis;
-
-        white-space: nowrap;
-    }
-
-
-    .pp-chat-admin-unread {
-        float: right;
-
-        background: #ef4444;
-
-        color: #fff;
-
-        border-radius: 999px;
-
-        padding: 2px 6px;
-
-        font-size: 10px;
-    }
-
-
-    .pp-chat-no-user {
-        padding: 25px 15px;
-
-        text-align: center;
-
-        color: #9ca3af;
-
-        font-size: 13px;
-    }
-
-
-    /* =========================================================
-       CHAT MAIN
-    ========================================================= */
-
-    .pp-chat-main {
-        flex: 1;
-
-        display: flex;
-
-        flex-direction: column;
-
-        min-width: 0;
-
-        min-height: 0;
-    }
-
-
-    /* =========================================================
-       MESSAGE BODY
-    ========================================================= */
-
-    .pp-chat-body {
-        flex: 1;
-
-        overflow-y: auto;
-
-        padding: 18px 16px;
-
-        background: #f8fafc;
-
-        min-height: 0;
-    }
-
-
-    /* =========================================================
-       MESSAGE ROW
-       ใช้แยก "ชื่อ" ออกจาก "กรอบข้อความ"
-    ========================================================= */
-
-    .pp-msg-row {
-        display: flex;
-
-        flex-direction: column;
-
-        width: 100%;
-
-        margin-bottom: 14px;
-    }
-
-
-    /* ข้อความของเราอยู่ด้านขวา */
-
-    .pp-msg-row.me {
-        align-items: flex-end;
-    }
-
-
-    /* ข้อความของอีกฝ่ายอยู่ด้านซ้าย */
-
-    .pp-msg-row.other {
-        align-items: flex-start;
-    }
-
-
-    /* =========================================================
-       SENDER NAME
-       ชื่อจะอยู่เหนือ Bubble
-    ========================================================= */
-
-    .pp-msg-name {
-        font-size: 11px;
-
-        font-weight: 600;
-
-        color: #6b7280;
-
-        margin-bottom: 4px;
-
-        padding: 0 6px;
-    }
-
-
-    .pp-msg-row.me .pp-msg-name {
-        text-align: right;
-    }
-
-
-    .pp-msg-row.other .pp-msg-name {
-        text-align: left;
-    }
-
-
-    /* =========================================================
-       MESSAGE BUBBLE
-    ========================================================= */
 
     .pp-msg-bubble {
-        max-width: 78%;
+        max-width: 82%;
+    }
 
-        padding: 10px 13px;
+}
 
-        border-radius: 16px;
 
-        line-height: 1.5;
+@media (max-width: 480px) {
 
-        font-size: 14px;
+    .pp-chat-button {
+        right: 14px;
 
-        white-space: pre-wrap;
-
-        word-break: break-word;
-
-        box-sizing: border-box;
+        bottom: 14px;
     }
 
 
-    /* Bubble ของเรา */
-
-    .pp-msg-row.me .pp-msg-bubble {
-        background: #7c3aed;
-
-        color: #fff;
-
-        border-bottom-right-radius: 5px;
+    .pp-chat-admin-panel {
+        width: 120px;
     }
 
 
-    /* Bubble ของอีกฝ่าย */
-
-    .pp-msg-row.other .pp-msg-bubble {
-        background: #fff;
-
-        color: #1f2937;
-
-        border: 1px solid #e5e7eb;
-
-        border-bottom-left-radius: 5px;
-
-        box-shadow: 0 1px 2px rgba(0,0,0,.04);
+    .pp-chat-body {
+        padding: 14px 10px;
     }
 
-
-    /* =========================================================
-       MESSAGE TIME
-    ========================================================= */
-
-    .pp-msg-time {
-        display: block;
-
-        margin-top: 5px;
-
-        font-size: 9px;
-
-        line-height: 1;
-
-        opacity: .65;
-    }
-
-
-    .pp-msg-row.me .pp-msg-time {
-        text-align: right;
-    }
-
-
-    .pp-msg-row.other .pp-msg-time {
-        text-align: left;
-    }
-
-
-    /* =========================================================
-       EMPTY CHAT
-    ========================================================= */
-
-    .pp-chat-empty {
-        height: 100%;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        text-align: center;
-
-        color: #9ca3af;
-
-        padding: 20px;
-
-        font-size: 13px;
-    }
-
-
-    /* =========================================================
-       MESSAGE FORM
-    ========================================================= */
 
     .pp-chat-form {
-        display: flex;
-
-        align-items: flex-end;
-
-        gap: 8px;
-
-        padding: 12px;
-
-        border-top: 1px solid #eee;
-
-        background: #fff;
-
-        flex-shrink: 0;
+        padding: 8px;
     }
 
 
-    /* =========================================================
-       INPUT
-    ========================================================= */
-
-    .pp-chat-input {
-        flex: 1;
-
-        width: 100%;
-
-        min-height: 44px;
-
-        max-height: 110px;
-
-        border: 1px solid #ddd;
-
-        border-radius: 14px;
-
-        padding: 11px 14px;
-
-        outline: none;
-
-        resize: none;
-
-        overflow-y: auto;
-
-        font-size: 14px;
-
-        line-height: 1.4;
-
-        font-family: inherit;
-
-        box-sizing: border-box;
-
-        background: #fff;
+    .pp-msg-bubble {
+        max-width: 88%;
     }
 
-
-    .pp-chat-input:focus {
-        border-color: #7c3aed;
-
-        box-shadow: 0 0 0 2px rgba(124,58,237,.10);
-    }
-
-
-    .pp-chat-input::placeholder {
-        color: #9ca3af;
-    }
-
-
-    /* =========================================================
-       SEND BUTTON
-    ========================================================= */
-
-    .pp-chat-send {
-        width: 44px;
-
-        height: 44px;
-
-        flex-shrink: 0;
-
-        border: 0;
-
-        border-radius: 50%;
-
-        background: #7c3aed;
-
-        color: #fff;
-
-        cursor: pointer;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        transition: .15s;
-    }
-
-
-    .pp-chat-send:hover {
-        background: #6d28d9;
-
-        transform: translateY(-1px);
-    }
-
-
-    .pp-chat-send:active {
-        transform: scale(.95);
-    }
-
-
-    /* =========================================================
-       MOBILE
-    ========================================================= */
-
-    @media (max-width: 700px) {
-
-        .pp-chat-window {
-            right: 8px;
-
-            bottom: 82px;
-
-            width: calc(100vw - 16px);
-
-            height: 70vh;
-        }
-
-
-        .pp-chat-admin-panel {
-            width: 145px;
-        }
-
-
-        .pp-msg-bubble {
-            max-width: 82%;
-        }
-    }
-
-
-    @media (max-width: 480px) {
-
-        .pp-chat-button {
-            right: 14px;
-
-            bottom: 14px;
-        }
-
-
-        .pp-chat-admin-panel {
-            width: 120px;
-        }
-
-
-        .pp-chat-body {
-            padding: 14px 10px;
-        }
-
-
-        .pp-chat-form {
-            padding: 8px;
-        }
-
-
-        .pp-msg-bubble {
-            max-width: 88%;
-        }
-    }
+}
 
 </style>
 
@@ -699,7 +840,10 @@
     aria-hidden="true"
 >
 
-    <!-- HEADER -->
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
 
     <div class="pp-chat-header">
 
@@ -713,6 +857,7 @@
                 }}
 
             </strong>
+
 
             <small id="ppChatSubtitle">
 
@@ -730,6 +875,7 @@
             id="ppChatClose"
             class="pp-chat-close"
             type="button"
+            aria-label="ปิดแชต"
         >
 
             &times;
@@ -739,7 +885,9 @@
     </div>
 
 
-    <!-- CONTENT -->
+    <!-- =====================================================
+         CONTENT
+    ====================================================== -->
 
     <div class="pp-chat-content">
 
@@ -752,7 +900,8 @@
 
             <div class="pp-chat-admin-panel">
 
-                <!-- Search -->
+
+                <!-- SEARCH -->
 
                 <div class="pp-chat-search">
 
@@ -765,7 +914,7 @@
                 </div>
 
 
-                <!-- User List -->
+                <!-- USER LIST -->
 
                 <div
                     id="ppChatAdminList"
@@ -784,7 +933,9 @@
         <div class="pp-chat-main">
 
 
-            <!-- Messages -->
+            <!-- =================================================
+                 MESSAGE BODY
+            ================================================== -->
 
             <div
                 id="ppChatBody"
@@ -800,7 +951,9 @@
             </div>
 
 
-            <!-- Message Form -->
+            <!-- =================================================
+                 MESSAGE FORM
+            ================================================== -->
 
             <form
                 id="ppChatForm"
@@ -850,26 +1003,34 @@
     const button =
         document.getElementById('ppChatButton');
 
+
     const windowEl =
         document.getElementById('ppChatWindow');
+
 
     const close =
         document.getElementById('ppChatClose');
 
+
     const body =
         document.getElementById('ppChatBody');
+
 
     const form =
         document.getElementById('ppChatForm');
 
+
     const input =
         document.getElementById('ppChatInput');
+
 
     const badge =
         document.getElementById('ppChatBadge');
 
+
     const adminList =
         document.getElementById('ppChatAdminList');
+
 
     const searchInput =
         document.getElementById('ppChatSearch');
@@ -917,10 +1078,13 @@
         const div =
             document.createElement('div');
 
+
         div.textContent =
             value ?? '';
 
+
         return div.innerHTML;
+
     }
 
 
@@ -934,6 +1098,7 @@
             return '';
         }
 
+
         return new Date(dateString)
             .toLocaleString(
                 'th-TH',
@@ -942,15 +1107,12 @@
                     minute: '2-digit'
                 }
             );
+
     }
 
 
     /* =========================================================
        RENDER MESSAGES
-       
-       จุดสำคัญ:
-       ชื่ออยู่ด้านบน
-       Bubble อยู่ด้านล่าง
     ========================================================= */
 
     function renderMessages(messages) {
@@ -986,8 +1148,8 @@
 
 
                     /*
-                    | ชื่อผู้ส่ง
-                    */
+                     * ชื่อผู้ส่ง
+                     */
 
                     let senderName =
                         m.sender?.name
@@ -995,12 +1157,15 @@
 
 
                     /*
-                    | ถ้าเป็นข้อความของตัวเอง
-                    | ใช้คำว่า "คุณ"
-                    */
+                     * ถ้าเป็นข้อความของตัวเอง
+                     * ให้แสดงว่า "คุณ"
+                     */
 
                     if (me) {
-                        senderName = 'คุณ';
+
+                        senderName =
+                            'คุณ';
+
                     }
 
 
@@ -1014,7 +1179,10 @@
                             }"
                         >
 
-                            <!-- ชื่ออยู่ด้านบน -->
+
+                            <!-- =================================
+                                 SENDER NAME
+                            ================================== -->
 
                             <div class="pp-msg-name">
 
@@ -1025,7 +1193,9 @@
                             </div>
 
 
-                            <!-- Bubble ข้อความ -->
+                            <!-- =================================
+                                 MESSAGE BUBBLE
+                            ================================== -->
 
                             <div class="pp-msg-bubble">
 
@@ -1034,7 +1204,7 @@
                                 )}
 
 
-                                <!-- เวลา -->
+                                <!-- TIME -->
 
                                 <span class="pp-msg-time">
 
@@ -1054,8 +1224,13 @@
                 .join('');
 
 
+        /*
+         * เลื่อนไปล่างสุด
+         */
+
         body.scrollTop =
             body.scrollHeight;
+
     }
 
 
@@ -1108,6 +1283,7 @@
             );
 
         }
+
     }
 
 
@@ -1138,6 +1314,7 @@
             `;
 
             return;
+
         }
 
 
@@ -1168,7 +1345,8 @@
                                     : ''
                             }"
                             data-conversation="${c.id}"
-                        >
+                        ">
+
 
                             ${
                                 unread
@@ -1209,9 +1387,11 @@
 
                                 ${
                                     c.latest_message?.message
+
                                     ? escapeHtml(
                                         c.latest_message.message
                                     ).substring(0, 35)
+
                                     : 'ยังไม่มีข้อความ'
                                 }
 
@@ -1224,6 +1404,10 @@
                 })
                 .join('');
 
+
+        /*
+         * Click User
+         */
 
         adminList
             .querySelectorAll(
@@ -1238,6 +1422,7 @@
                         selectedConversation =
                             btn.dataset.conversation;
 
+
                         loadAdminConversation(
                             selectedConversation
                         );
@@ -1246,6 +1431,7 @@
                 );
 
             });
+
     }
 
 
@@ -1287,6 +1473,7 @@
                 );
 
                 return;
+
             }
 
 
@@ -1299,30 +1486,46 @@
 
 
             /*
-            | ชื่อ User ด้านบน Header
-            */
+             * ชื่อ User บน Header
+             */
 
-            document
-                .getElementById('ppChatTitle')
-                .textContent =
+            const title =
+                document.getElementById(
+                    'ppChatTitle'
+                );
+
+
+            if (title) {
+
+                title.textContent =
                     data.conversation.user?.name
                     || 'ผู้ติดต่อ';
 
+            }
+
 
             /*
-            | Email User
-            */
+             * Email User บน Header
+             */
 
-            document
-                .getElementById('ppChatSubtitle')
-                .textContent =
+            const subtitle =
+                document.getElementById(
+                    'ppChatSubtitle'
+                );
+
+
+            if (subtitle) {
+
+                subtitle.textContent =
                     data.conversation.user?.email
                     || '';
 
+            }
+
 
             /*
-            | แสดงข้อความ
-            */
+             * แสดงข้อความ
+             */
 
             renderMessages(
                 data.messages || []
@@ -1330,15 +1533,15 @@
 
 
             /*
-            | Update unread
-            */
+             * Update unread
+             */
 
             await updateUnread();
 
 
             /*
-            | Update selected state
-            */
+             * Update selected user
+             */
 
             renderAdminList(
                 conversations
@@ -1398,8 +1601,8 @@
 
 
             /*
-            | เลือกคนแรกอัตโนมัติ
-            */
+             * เลือกคนแรกอัตโนมัติ
+             */
 
             if (
                 !selectedConversation &&
@@ -1454,6 +1657,7 @@
             );
 
             return;
+
         }
 
 
@@ -1558,7 +1762,8 @@
         'click',
         async function () {
 
-            open = !open;
+            open =
+                !open;
 
 
             windowEl
@@ -1601,18 +1806,26 @@
 
 
     /* =========================================================
-       CLOSE
+       CLOSE CHAT
     ========================================================= */
 
     close.addEventListener(
         'click',
         function () {
 
-            open = false;
+            open =
+                false;
+
 
             windowEl
                 .classList
                 .remove('open');
+
+
+            windowEl.setAttribute(
+                'aria-hidden',
+                'true'
+            );
 
         }
     );
@@ -1644,7 +1857,17 @@
         'input',
         function () {
 
-            this.style.height = 'auto';
+            /*
+             * รีเซ็ตความสูงก่อน
+             */
+
+            this.style.height =
+                '44px';
+
+
+            /*
+             * ขยายตามข้อความ
+             */
 
             this.style.height =
                 Math.min(
@@ -1658,7 +1881,7 @@
 
     /* =========================================================
        ENTER = SEND
-       SHIFT + ENTER = ขึ้นบรรทัดใหม่
+       SHIFT + ENTER = NEW LINE
     ========================================================= */
 
     input.addEventListener(
@@ -1702,8 +1925,8 @@
 
 
             /*
-            | Admin ต้องเลือก User
-            */
+             * Admin ต้องเลือก User
+             */
 
             if (
                 isAdmin &&
@@ -1715,6 +1938,7 @@
                 );
 
                 return;
+
             }
 
 
@@ -1722,7 +1946,8 @@
 
                 const payload = {
 
-                    message: message,
+                    message:
+                        message,
 
                     conversation_id:
                         isAdmin
@@ -1782,21 +2007,25 @@
                     );
 
                     return;
+
                 }
 
 
                 /*
-                | ล้างช่องข้อความ
-                */
+                 * ล้างช่องข้อความ
+                 */
 
-                input.value = '';
+                input.value =
+                    '';
 
-                input.style.height = '44px';
+
+                input.style.height =
+                    '44px';
 
 
                 /*
-                | Reload
-                */
+                 * Reload Conversation
+                 */
 
                 if (isAdmin) {
 
@@ -1804,10 +2033,6 @@
                         selectedConversation
                     );
 
-                    /*
-                    | โหลดรายการ User ใหม่
-                    | เพื่ออัปเดตข้อความล่าสุด
-                    */
 
                     await loadAdminList();
 
@@ -1846,35 +2071,52 @@
     setInterval(
         async function () {
 
+            /*
+             * Update unread
+             */
+
             await updateUnread();
 
+
+            /*
+             * ถ้า Chat ปิด
+             */
 
             if (!open) {
                 return;
             }
 
 
+            /*
+             * ADMIN
+             */
+
             if (isAdmin) {
 
                 /*
-                | จำ Conversation ที่กำลังเปิด
-                */
+                 * จำ Conversation ปัจจุบัน
+                 */
 
                 const currentConversation =
                     selectedConversation;
 
 
+                /*
+                 * โหลดรายการ User
+                 */
+
                 await loadAdminList();
 
 
                 /*
-                | โหลด Conversation เดิมกลับมา
-                */
+                 * โหลด Conversation เดิม
+                 */
 
                 if (currentConversation) {
 
                     selectedConversation =
                         currentConversation;
+
 
                     await loadAdminConversation(
                         currentConversation
@@ -1882,7 +2124,14 @@
 
                 }
 
-            } else {
+            }
+
+
+            /*
+             * USER
+             */
+
+            else {
 
                 await loadUserChat();
 
