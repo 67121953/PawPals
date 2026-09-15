@@ -319,10 +319,12 @@
     }
 
     /* =========================
-       EMPTY
+       EMPTY STATE
     ========================= */
     .empty-wrapper {
         width: 100%;
+        min-height: 280px;
+
         display: flex;
         justify-content: center;
         align-items: center;
@@ -332,13 +334,14 @@
         width: 100%;
         max-width: 500px;
         min-height: 230px;
-        margin: 0 auto;
+
         padding: 50px 25px;
+        margin: 0 auto;
 
         display: flex;
         flex-direction: column;
-        align-items: center;
         justify-content: center;
+        align-items: center;
 
         text-align: center;
 
@@ -350,6 +353,7 @@
 
     .empty-box i {
         display: block;
+        margin-bottom: 15px;
     }
 
     .empty-box p {
@@ -393,6 +397,10 @@
 
         .action-overlay {
             opacity: 1;
+        }
+
+        .empty-wrapper {
+            min-height: 250px;
         }
 
         .empty-box {
@@ -487,9 +495,7 @@
 
             <a href="{{ route('pets.index') }}"
                class="see-all">
-
                 See All →
-
             </a>
 
         </div>
@@ -974,13 +980,13 @@
             @empty
 
                 {{-- EMPTY STATE --}}
-                <div class="col-12">
+                <div class="col-12 d-flex justify-content-center">
 
                     <div class="empty-wrapper">
 
                         <div class="empty-box">
 
-                            <i class="fa-solid fa-box-open fa-3x text-muted mb-3"></i>
+                            <i class="fa-solid fa-box-open fa-3x text-muted"></i>
 
                             <p class="text-muted fs-5 mb-0">
                                 ยังไม่มีข้อมูลสัตว์เลี้ยงในระบบ
