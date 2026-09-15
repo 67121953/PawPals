@@ -53,6 +53,17 @@
             justify-content: center;
             font-size: 30px;
         }
+
+        @media (max-width: 768px) {
+            .hero {
+                min-height: 600px;
+                background-position: center;
+            }
+
+            .hero-title {
+                font-size: 2.8rem;
+            }
+        }
     </style>
 </head>
 
@@ -77,37 +88,35 @@
 
                 </a>
 
-
                 {{-- Desktop Menu --}}
                 <div class="hidden md:flex items-center gap-8">
 
                     <a href="{{ route('welcome') }}"
-                       class="text-gray-700 hover:text-orange-500 font-medium">
+                       class="text-gray-700 hover:text-orange-500 font-medium transition">
                         หน้าแรก
                     </a>
 
                     <a href="{{ route('pets.index') }}"
-                       class="text-gray-700 hover:text-orange-500 font-medium">
+                       class="text-gray-700 hover:text-orange-500 font-medium transition">
                         สัตว์ที่รอการรับเลี้ยง
                     </a>
 
                     <a href="{{ route('pet-care') }}"
-                       class="text-gray-700 hover:text-orange-500 font-medium">
+                       class="text-gray-700 hover:text-orange-500 font-medium transition">
                         การดูแลสัตว์
                     </a>
 
                     <a href="{{ route('about-us') }}"
-                       class="text-gray-700 hover:text-orange-500 font-medium">
+                       class="text-gray-700 hover:text-orange-500 font-medium transition">
                         เกี่ยวกับเรา
                     </a>
 
                     <a href="{{ route('contact') }}"
-                       class="text-gray-700 hover:text-orange-500 font-medium">
+                       class="text-gray-700 hover:text-orange-500 font-medium transition">
                         ติดต่อเรา
                     </a>
 
                 </div>
-
 
                 {{-- Login / Register --}}
                 <div class="flex items-center gap-3">
@@ -123,12 +132,12 @@
                     @else
 
                         <a href="{{ route('login') }}"
-                           class="text-gray-700 hover:text-orange-500 font-medium">
+                           class="text-gray-700 hover:text-orange-500 font-medium transition">
                             เข้าสู่ระบบ
                         </a>
 
                         <a href="{{ route('register') }}"
-                           class="px-5 py-2 rounded-full bg-orange-500 text-gray-700 font-semibold
+                           class="px-5 py-2 rounded-full bg-orange-500 text-white font-semibold
                                   hover:bg-orange-600 transition">
                             สมัครสมาชิก
                         </a>
@@ -156,12 +165,12 @@
                             text-orange-600 font-semibold shadow-sm mb-6">
 
                     🐾
+
                     <span>
                         ยินดีต้อนรับสู่ PawPals
                     </span>
 
                 </div>
-
 
                 <h1 class="hero-title text-gray-800 mb-6">
 
@@ -174,7 +183,6 @@
 
                 </h1>
 
-
                 <p class="text-lg md:text-xl text-gray-600 leading-relaxed mb-8">
 
                     PawPals คือระบบที่ช่วยเชื่อมต่อระหว่าง
@@ -182,7 +190,6 @@
                     กับคนที่พร้อมมอบความรักและครอบครัวให้พวกเขา
 
                 </p>
-
 
                 <div class="flex flex-wrap gap-4">
 
@@ -203,7 +210,6 @@
                         <span>→</span>
 
                     </a>
-
 
                     <a href="{{ route('about-us') }}"
                        class="inline-flex items-center
@@ -252,7 +258,6 @@
 
             {{-- Feature Cards --}}
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-
 
                 {{-- Card 1 --}}
                 <div class="paw-card bg-orange-50 rounded-3xl p-8">
