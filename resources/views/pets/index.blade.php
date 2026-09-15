@@ -165,13 +165,14 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #fff7ed;
+        background: #f8fafc;
     }
 
     .pet-img-container img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        display: block;
         transition: transform 0.4s ease;
     }
 
@@ -186,20 +187,33 @@
         text-decoration: none;
     }
 
-    .pet-placeholder {
+    /* =========================
+       NO IMAGE
+    ========================= */
+    .pet-no-image {
         width: 100%;
         height: 100%;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        font-size: 85px;
 
-        background:
-            linear-gradient(
-                135deg,
-                #fff7ed,
-                #ffedd5
-            );
+        background: #f1f5f9;
+        color: #94a3b8;
+
+        text-align: center;
+    }
+
+    .pet-no-image i {
+        font-size: 70px;
+        margin-bottom: 12px;
+        color: #cbd5e1;
+    }
+
+    .pet-no-image span {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #94a3b8;
     }
 
     /* =========================
@@ -244,10 +258,13 @@
         position: absolute;
         top: 12px;
         right: 12px;
+
         display: flex;
         gap: 6px;
+
         opacity: 0;
         transition: opacity 0.25s ease;
+
         z-index: 10;
     }
 
@@ -279,10 +296,12 @@
     .pet-meta {
         font-size: 0.85rem;
         color: #64748b;
+
         display: flex;
         align-items: center;
         gap: 15px;
         flex-wrap: wrap;
+
         margin-bottom: 8px;
     }
 
@@ -321,6 +340,11 @@
     /* =========================
        EMPTY STATE
     ========================= */
+    .empty-state-col {
+        flex: 0 0 100% !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
 
     .empty-wrapper {
         width: 100%;
@@ -333,7 +357,7 @@
 
     .empty-box {
         width: 320px;
-        height: 230px;
+        min-height: 230px;
 
         padding: 30px 20px;
         margin: 0 auto;
@@ -450,7 +474,7 @@
 
     <div class="container">
 
-        {{-- Alert Success --}}
+        {{-- Success --}}
         @if(session('success'))
 
             <div class="alert alert-success alert-dismissible fade show rounded-4 mb-4"
@@ -469,7 +493,7 @@
         @endif
 
 
-        {{-- Alert Error --}}
+        {{-- Error --}}
         @if(session('error'))
 
             <div class="alert alert-danger alert-dismissible fade show rounded-4 mb-4"
@@ -642,13 +666,18 @@
         {{-- =================================================
              PET CARDS
         ================================================= --}}
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 justify-content-center">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
 
-            @forelse($pets as $index => $item)
+            @forelse($pets as $item)
 
                 @php
 
+                    /* STATUS */
+
                     $status = $item->adoption_status ?? 'available';
+
+
+                    /* AGE */
 
                     $ageVal = (float) ($item->age_years ?? 0);
 
@@ -669,41 +698,51 @@
                             $years
                             . ' '
                             . ($years > 1 ? 'years' : 'year');
-
                     }
 
 
-                    /* Pet Type */
+                    /* PET TYPE */
 
                     $petType = strtolower($item->type ?? '');
 
-
-                    /* Default Image */
-
                     if ($petType === 'dog') {
-
-                        $defaultImage =
-                            'https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=900&q=85';
 
                         $typeIcon = '🐶';
                         $typeName = 'Dog';
 
                     } elseif ($petType === 'cat') {
 
-                        $defaultImage =
-                            'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=900&q=85';
-
                         $typeIcon = '🐱';
                         $typeName = 'Cat';
 
                     } else {
 
-                        $defaultImage =
-                            'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=900&q=85';
-
                         $typeIcon = '🐾';
                         $typeName = 'Pet';
+                    }
 
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | IMAGE
+                    |--------------------------------------------------------------------------
+                    |
+                    | ถ้ามีรูปในฐานข้อมูล
+                    | ใช้รูปที่ผู้ใช้ Upload เท่านั้น
+                    |
+                    | ถ้าไม่มีรูป
+                    | ไม่สุ่มรูปจาก Internet
+                    | แสดงช่อง "ไม่มีรูปภาพ"
+                    |
+                    */
+
+                    $imageUrl = null;
+
+                    if (!empty($item->image)) {
+
+                        $imagePath = ltrim($item->image, '/');
+
+                        $imageUrl = asset('storage/' . $imagePath);
                     }
 
                 @endphp
@@ -752,49 +791,73 @@
                             @endif
 
 
-                            {{-- PET IMAGE --}}
-                            @if(!empty($item->image))
+                            {{-- =================================================
+                                 IMAGE
+                            ================================================= --}}
 
+                            @if($imageUrl)
+
+                                {{-- มีรูปที่ Upload --}}
                                 @auth
 
                                     <a href="{{ route('pets.show', $item->id) }}"
                                        class="pet-image-link">
 
-                                        <img src="{{ asset('storage/' . $item->image) }}"
-                                             alt="{{ $item->name }}"
-                                             style="{{ $status === 'adopted'
+                                        <img
+                                            src="{{ $imageUrl }}"
+                                            alt="{{ $item->name }}"
+                                            loading="lazy"
+                                            style="{{ $status === 'adopted'
                                                 ? 'filter: grayscale(35%);'
-                                                : '' }}">
+                                                : '' }}"
+                                        >
 
                                     </a>
 
                                 @else
 
-                                    <img src="{{ asset('storage/' . $item->image) }}"
-                                         alt="{{ $item->name }}"
-                                         style="{{ $status === 'adopted'
+                                    <img
+                                        src="{{ $imageUrl }}"
+                                        alt="{{ $item->name }}"
+                                        loading="lazy"
+                                        style="{{ $status === 'adopted'
                                             ? 'filter: grayscale(35%);'
-                                            : '' }}">
+                                            : '' }}"
+                                    >
 
                                 @endauth
 
                             @else
 
-                                {{-- Default Image --}}
+                                {{-- ไม่มีรูป --}}
                                 @auth
 
                                     <a href="{{ route('pets.show', $item->id) }}"
                                        class="pet-image-link">
 
-                                        <img src="{{ $defaultImage }}"
-                                             alt="{{ $item->name }}">
+                                        <div class="pet-no-image">
+
+                                            <i class="fa-regular fa-image"></i>
+
+                                            <span>
+                                                ยังไม่มีรูปภาพ
+                                            </span>
+
+                                        </div>
 
                                     </a>
 
                                 @else
 
-                                    <img src="{{ $defaultImage }}"
-                                         alt="{{ $item->name }}">
+                                    <div class="pet-no-image">
+
+                                        <i class="fa-regular fa-image"></i>
+
+                                        <span>
+                                            ยังไม่มีรูปภาพ
+                                        </span>
+
+                                    </div>
 
                                 @endauth
 
@@ -811,7 +874,9 @@
                             </span>
 
 
-                            {{-- ADMIN ACTION --}}
+                            {{-- =================================================
+                                 ADMIN ACTION
+                            ================================================= --}}
                             @auth
 
                                 @if(auth()->user()->role === 'admin')
@@ -887,12 +952,12 @@
 
                                 <span>
 
-                                    <i class="{{ strtolower($item->gender) == 'male'
+                                    <i class="{{ strtolower($item->gender ?? '') === 'male'
                                         ? 'fa-solid fa-mars text-primary'
                                         : 'fa-solid fa-venus text-danger' }}">
                                     </i>
 
-                                    {{ strtolower($item->gender) }}
+                                    {{ strtolower($item->gender ?? '') }}
 
                                 </span>
 
@@ -922,7 +987,9 @@
                             @endif
 
 
-                            {{-- ADOPTION BUTTON --}}
+                            {{-- =================================================
+                                 ADOPTION BUTTON
+                            ================================================= --}}
                             @if($status === 'adopted')
 
                                 <button type="button"
@@ -984,7 +1051,7 @@
             @empty
 
                 {{-- EMPTY STATE --}}
-                <div class="col-12">
+                <div class="col-12 empty-state-col">
 
                     <div class="empty-wrapper">
 
