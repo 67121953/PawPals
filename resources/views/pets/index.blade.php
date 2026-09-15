@@ -321,9 +321,10 @@
     /* =========================
        EMPTY STATE
     ========================= */
+
     .empty-wrapper {
         width: 100%;
-        min-height: 280px;
+        min-height: 300px;
 
         display: flex;
         justify-content: center;
@@ -331,11 +332,10 @@
     }
 
     .empty-box {
-        width: 100%;
-        max-width: 500px;
-        min-height: 230px;
+        width: 320px;
+        height: 230px;
 
-        padding: 50px 25px;
+        padding: 30px 20px;
         margin: 0 auto;
 
         display: flex;
@@ -348,17 +348,18 @@
         background: #ffffff;
         border-radius: 25px;
 
-        box-shadow: 0 5px 18px rgba(15, 23, 42, 0.05);
+        box-shadow: 0 8px 25px rgba(15, 23, 42, 0.08);
     }
 
     .empty-box i {
         display: block;
-        margin-bottom: 15px;
+        margin-bottom: 18px;
     }
 
     .empty-box p {
         text-align: center;
         margin: 0;
+        line-height: 1.6;
     }
 
     /* =========================
@@ -404,7 +405,8 @@
         }
 
         .empty-box {
-            max-width: 90%;
+            width: 90%;
+            max-width: 320px;
         }
     }
 </style>
@@ -640,7 +642,7 @@
         {{-- =================================================
              PET CARDS
         ================================================= --}}
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 justify-content-center">
 
             @forelse($pets as $index => $item)
 
