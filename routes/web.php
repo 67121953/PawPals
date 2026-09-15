@@ -87,13 +87,21 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    // เปิดหน้า Chat
+    // เปิดหน้า / ข้อมูล Chat
     Route::get('/chat', [ChatController::class, 'index'])
         ->name('chat.index');
 
     // ดึงข้อความใน Conversation
     Route::get('/chat/messages', [ChatController::class, 'messages'])
         ->name('chat.messages');
+
+    // ดึงข้อมูล Conversation เฉพาะรายการ
+    Route::get('/chat/conversation/{conversation}', [ChatController::class, 'conversation'])
+        ->name('chat.conversation');
+
+    // ดึงจำนวนข้อความที่ยังไม่ได้อ่าน
+    Route::get('/chat/unread', [ChatController::class, 'unread'])
+        ->name('chat.unread');
 
     // ส่งข้อความ
     Route::post('/chat/messages', [ChatController::class, 'send'])
@@ -188,8 +196,8 @@ Route::middleware('auth')->group(function () {
             ->name('adoptions.approve');
 
         // ปฏิเสธ
-        Route::patch('/adoptions/{adoption}/reject', [AdminAdoptionController::class, 'reject'])
-            ->name('adoptions.reject');
+        Route::patch('/admin/adoptions/{adoption}/reject', [AdminAdoptionController::class, 'reject'])
+            ->name('admin.adoptions.reject');
     });
 
 
