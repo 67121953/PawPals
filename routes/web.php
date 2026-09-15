@@ -43,7 +43,7 @@ Route::get('/contact', function () {
 | Contact
 |--------------------------------------------------------------------------
 |
-| ตอนนี้ Contact จะส่งข้อความผ่านระบบ Chat
+| Contact จะส่งข้อความผ่านระบบ Chat
 | สำหรับผู้ใช้ที่ Login
 |
 */
@@ -91,7 +91,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/chat', [ChatController::class, 'index'])
         ->name('chat.index');
 
-    // ดึงข้อความ
+    // ดึงข้อความใน Conversation
     Route::get('/chat/messages', [ChatController::class, 'messages'])
         ->name('chat.messages');
 
@@ -154,12 +154,15 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
+    // หน้าแบบฟอร์มขอรับเลี้ยง
     Route::get('/adoption/create', [PetController::class, 'createAdoptionForm'])
         ->name('adoption.create');
 
+    // บันทึกข้อมูลการขอรับเลี้ยง
     Route::post('/adoption', [UserController::class, 'store'])
         ->name('adoption.store');
 
+    // หน้ายืนยันการขอรับเลี้ยง
     Route::get('/adoption/confirmation/{adoption}', [UserController::class, 'confirmation'])
         ->name('adoption.confirmation');
 
@@ -172,15 +175,19 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('admin')->name('admin.')->group(function () {
 
+        // รายการคำขอรับเลี้ยง
         Route::get('/adoptions', [AdminAdoptionController::class, 'index'])
             ->name('adoptions.index');
 
+        // รายละเอียดคำขอรับเลี้ยง
         Route::get('/adoptions/{adoption}', [AdminAdoptionController::class, 'show'])
             ->name('adoptions.show');
 
+        // อนุมัติ
         Route::patch('/adoptions/{adoption}/approve', [AdminAdoptionController::class, 'approve'])
             ->name('adoptions.approve');
 
+        // ปฏิเสธ
         Route::patch('/adoptions/{adoption}/reject', [AdminAdoptionController::class, 'reject'])
             ->name('adoptions.reject');
     });
@@ -236,5 +243,11 @@ Route::middleware('auth')->group(function () {
         ->name('movie.destroy');
 });
 
+
+/*
+|--------------------------------------------------------------------------
+| Authentication Routes
+|--------------------------------------------------------------------------
+*/
 
 require __DIR__.'/auth.php';
