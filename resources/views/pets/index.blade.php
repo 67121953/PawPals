@@ -16,7 +16,6 @@
     .pets-hero {
         position: relative;
         overflow: hidden;
-
         min-height: 400px;
 
         background:
@@ -322,12 +321,40 @@
     /* =========================
        EMPTY
     ========================= */
+    .empty-wrapper {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
     .empty-box {
         width: 100%;
-        padding: 80px 20px;
+        max-width: 500px;
+        min-height: 230px;
+        margin: 0 auto;
+        padding: 50px 25px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
         text-align: center;
-        background: white;
+
+        background: #ffffff;
         border-radius: 25px;
+
+        box-shadow: 0 5px 18px rgba(15, 23, 42, 0.05);
+    }
+
+    .empty-box i {
+        display: block;
+    }
+
+    .empty-box p {
+        text-align: center;
+        margin: 0;
     }
 
     /* =========================
@@ -366,6 +393,10 @@
 
         .action-overlay {
             opacity: 1;
+        }
+
+        .empty-box {
+            max-width: 90%;
         }
     }
 </style>
@@ -633,11 +664,9 @@
 
                     }
 
-
                     /* Pet Type */
 
                     $petType = strtolower($item->type ?? '');
-
 
                     /* Default Image */
 
@@ -944,17 +973,20 @@
 
             @empty
 
+                {{-- EMPTY STATE --}}
                 <div class="col-12">
 
-                    <div class="empty-box">
+                    <div class="empty-wrapper">
 
-                        <i class="fa-solid fa-box-open fa-3x text-muted mb-3"></i>
+                        <div class="empty-box">
 
-                        <p class="text-muted fs-5 mb-0">
+                            <i class="fa-solid fa-box-open fa-3x text-muted mb-3"></i>
 
-                            ยังไม่มีข้อมูลสัตว์เลี้ยงในระบบ
+                            <p class="text-muted fs-5 mb-0">
+                                ยังไม่มีข้อมูลสัตว์เลี้ยงในระบบ
+                            </p>
 
-                        </p>
+                        </div>
 
                     </div>
 
