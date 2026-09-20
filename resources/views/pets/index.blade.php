@@ -387,6 +387,88 @@
     }
 
     /* =========================
+       PAGINATION
+    ========================= */
+    .pets-pagination {
+        margin-top: 50px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .pets-pagination-buttons {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .pets-page-link {
+        min-width: 44px;
+        height: 40px;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        padding: 0 14px;
+
+        border: 1px solid #dee2e6;
+        background: #ffffff;
+        color: #0d6efd;
+
+        text-decoration: none;
+
+        font-size: 0.95rem;
+        font-weight: 500;
+
+        transition: all 0.2s ease;
+    }
+
+    .pets-page-link:first-child {
+        border-radius: 7px 0 0 7px;
+    }
+
+    .pets-page-link:last-child {
+        border-radius: 0 7px 7px 0;
+    }
+
+    .pets-page-link:not(:first-child) {
+        margin-left: -1px;
+    }
+
+    .pets-page-link:hover {
+        background: #f1f5f9;
+        color: #0a58ca;
+        z-index: 2;
+    }
+
+    .pets-page-link.active {
+        background: #0d6efd;
+        border-color: #0d6efd;
+        color: #ffffff;
+        z-index: 3;
+    }
+
+    .pets-page-link.disabled {
+        background: #f8f9fa;
+        color: #adb5bd;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+
+    .pets-pagination-info {
+        color: #64748b;
+        font-size: 0.9rem;
+        text-align: center;
+    }
+
+    .pets-pagination-info strong {
+        color: #334155;
+        font-weight: 700;
+    }
+
+    /* =========================
        RESPONSIVE
     ========================= */
     @media (max-width: 992px) {
@@ -431,6 +513,12 @@
         .empty-box {
             width: 90%;
             max-width: 320px;
+        }
+
+        .pets-page-link {
+            min-width: 38px;
+            height: 38px;
+            padding: 0 10px;
         }
     }
 </style>
@@ -1079,9 +1167,80 @@
         ================================================= --}}
         @if($pets->hasPages())
 
-            <div class="d-flex justify-content-center mt-5">
+            <div class="pets-pagination">
 
-                {{ $pets->links() }}
+                {{-- ปุ่มเปลี่ยนหน้า --}}
+                <div class="pets-pagination-buttons">
+
+                    {{-- Previous --}}
+                    @if($pets->onFirstPage())
+
+                        <span class="pets-page-link disabled">
+                            ‹
+                        </span>
+
+                    @else
+
+                        <a href="{{ $pets->appends(request()->query())->previousPageUrl() }}"
+                           class="pets-page-link">
+                            ‹
+                        </a>
+
+                    @endif
+
+
+                    {{-- Page Numbers --}}
+                    @for($page = 1; $page <= $pets->lastPage(); $page++)
+
+                        @if($page == $pets->currentPage())
+
+                            <span class="pets-page-link active">
+                                {{ $page }}
+                            </span>
+
+                        @else
+
+                            <a href="{{ $pets->appends(request()->query())->url($page) }}"
+                               class="pets-page-link">
+                                {{ $page }}
+                            </a>
+
+                        @endif
+
+                    @endfor
+
+
+                    {{-- Next --}}
+                    @if($pets->hasMorePages())
+
+                        <a href="{{ $pets->appends(request()->query())->nextPageUrl() }}"
+                           class="pets-page-link">
+                            ›
+                        </a>
+
+                    @else
+
+                        <span class="pets-page-link disabled">
+                            ›
+                        </span>
+
+                    @endif
+
+                </div>
+
+
+                {{-- ข้อความจำนวนข้อมูล --}}
+                <div class="pets-pagination-info">
+
+                    Showing
+                    <strong>{{ $pets->firstItem() }}</strong>
+                    to
+                    <strong>{{ $pets->lastItem() }}</strong>
+                    of
+                    <strong>{{ $pets->total() }}</strong>
+                    results
+
+                </div>
 
             </div>
 
