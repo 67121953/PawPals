@@ -13,6 +13,7 @@
         {{ config('app.name', 'PawPals') }}
     </title>
 
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
 
@@ -21,8 +22,19 @@
         rel="stylesheet"
     />
 
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+
+
     <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite([
+        'resources/css/app.css',
+        'resources/js/app.js'
+    ])
 
 </head>
 
@@ -31,11 +43,19 @@
 
     <div class="min-h-screen bg-gray-100">
 
-        {{-- Navigation --}}
+
+        {{-- =========================================
+             Navigation
+        ========================================== --}}
+
         @include('layouts.navigation')
 
 
-        {{-- Page Heading --}}
+
+        {{-- =========================================
+             Page Heading
+        ========================================== --}}
+
         @isset($header)
 
             <header class="bg-white shadow">
@@ -51,25 +71,33 @@
         @endisset
 
 
-        {{-- Page Content --}}
+
+        {{-- =========================================
+             Page Content
+        ========================================== --}}
+
         <main>
 
             {{ $slot }}
 
         </main>
 
+
     </div>
 
 
-    {{-- =========================
+
+    {{-- =========================================
          Chat Widget
-    ========================== --}}
+         แสดงเฉพาะผู้ที่ Login แล้ว
+    ========================================== --}}
 
     @auth
 
         @include('chat.widget')
 
     @endauth
+
 
 
 </body>
